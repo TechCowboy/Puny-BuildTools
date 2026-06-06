@@ -6,7 +6,7 @@
 source config.sh
 
 echo -e "\nagon.sh 1.0 - Agon Light release builder"
-echo -e "Puny BuildTools, (c) 2025 Shawn Sijnstra\n"
+echo -e "Puny BuildTools, (c) 2026 Shawn Sijnstra\n"
 
 #story check / arrangement
 if ! [ -f ${STORY}.z${ZVERSION} ] ; then
