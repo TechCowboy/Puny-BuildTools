@@ -5,6 +5,7 @@
 ;TRACE_SHOW_DICT_ENTRIES = 1
 ;TRACE_PRINT_ARRAYS = 1
 ;TRACE_HISTORY = 1
+input_counter !byte 0
 .text_tmp	!byte 0
 .current_character !byte 0
 .petscii_char_read = zp_temp
@@ -66,7 +67,9 @@ parse_terminating_characters
 !ifdef BENCHMARK {
 benchmark_commands
 ; !pet "turn statue w:turn it e:turn it n:n:open door:",255,0
-!pet 255,"turn statue w:turn it e:turn it n:n:open door:n:turn flashlight on:n:examine model:press green:g:g:press black:g:press white:g:press green:g:g:press black:press blue:press green:g:g:g:press red:g:g:take ring:e:e:take yellow card:s:take slide:put it in slide projector:turn slide projector on:focus slide projector:take film:examine film projector:remove cap:drop it:put film in film projector:turn film projector on:examine screen:n:w:w:s:e:e:examine piano:open lid:take violet card:play tomorrow:push piano n:d:s:take dirty pillar:n:u:push piano s:g:d:n:take meter:s:u:drop pillar:w:w:w:drop ring:drop meter:e:drop yellow and violet:n:drop letter and photo:s:w:enter fireplace:take brick and drop it:u:u:u:e:d:take penguin:u:w:d:d:d:take indigo card:e:drop penguin:e:drop indigo:w:examine red statue:examine white statue:examine blue statue:e:e:move painting:take green card:examine safe:turn dial right 3:turn dial left 7:turn dial right 5:open safe:take grater:w:drop green:w:drop grater:e:open closet:enter closet:pull third peg:open door:n:examine newel:turn newel:e:take sack:open window:open sack:take finch:drop sack:w:w:s:move mat:take red card:n:e:s:pull second peg:open door:n:drop red:w:drop finch:e:enter closet:take bucket:n:n:unlock patio door:open door:n:take orange card:e:n:n:examine cannon:fill bucket with water:e:s:w:s:s:enter closet:hang bucket on third peg:n:u:open closet:s:wait:wait:open door:n:open panel:open trunk:take hydrant:d:d:w:drop hydrant:e:take all:n:w:w:d:open door:s:take blue card:n:turn computer on:examine it:put red in slot:put yellow in slot:put orange in slot:put green in slot:put blue in slot:put indigo in slot:put violet in slot:examine display:u:take matchbox:open it:take match:drop matchbox:e:e:n:e:n:n:take cannon ball:put it in cannon:light match:light fuse:open compartment:take mask:e:s:w:s:s:w:drop mask:e:s:open mailbox:take yellowed piece of paper:take card:examine card:drop card:n:n:w:take thin:e:n:n:nw:take shovel:ne:n:put thin on yellowed:n:w:n:w:n:w:s:w:w:n:w:s:e:s:e:n:e:s:w:n:w:s:w:n:w:s:w:n:e:n:e:n:e:e:n:e:s:e:e:s:e:n:e:n:e:s:w:s:w:s:e:n:w:s:dig ground with shovel:take stamp:n:e:s:w:n:e:n:e:n:w:s:w:s:w:n:w:w:n:w:s:w:w:s:w:s:w:s:e:n:e:s:e:n:e:s:e:n:w:s:w:n:w:n:e:s:e:e:n:e:s:e:s:e:s:w:s:e:s:s:w:drop stamp:e:drop all except flashlight:w:take red statuette:e:u:open door:enter closet:take skis:n:d:n:n:e:n:n:n:drop flashlight:s:e:e:wear skis:n:take match:light red statue:put wax on match:take skis off:swim:s:d:d:w:u:u:n:n:u:light match:light red statue:lift left end of plank:pull chain:burn rope:stand on right end of plank:wait:blow statue out:drop skis:drop statue:take ladder and flashlight:d:hang ladder on hooks:examine safe:turn dial left 4:turn dial right 5:turn dial left 7:open safe:take film:u:s:e:s:w:s:s:w:drop film:call 576-3190:n:w:d:take toupee:take peg and note:read note:u:e:e:s:u:s:put peg in hole:get gun:shoot herman:get sword:kill herman with sword:get shears:kill herman with shears:untie hildegarde:",255,0
+!byte 255
+!source "../temp/walkthrough.asm"
+!pet ":",255,0
 benchmark_read_char
 	lda benchmark_commands
 	beq +++
@@ -79,11 +82,16 @@ benchmark_read_char
 	jsr translate_petscii_to_zscii
 +++	rts
 ++	jsr dollar
-	lda ti_variable
+	jsr kernal_readtime   ; read start time (in jiffys) in a,x,y (low to high)
+	pha
+	tya
+;	lda ti_variable
 	jsr print_byte_as_hex
-	lda ti_variable + 1
+	txa
+;	lda ti_variable + 1
 	jsr print_byte_as_hex
-	lda ti_variable + 2
+	pla
+;	lda ti_variable + 2
 	jsr print_byte_as_hex
 	jsr space
 	jsr printchar_flush
@@ -111,6 +119,7 @@ z_ins_read_char
 	; ignore argument 0 (always 1)
 	; ldy z_operand_value_low_arr
 	; optional time routine arguments
+	inc input_counter
 	jsr printchar_flush
 	; clear [More] counter
 	jsr clear_num_rows
@@ -147,6 +156,7 @@ z_ins_read_char
 	lda #0 ; time routine returned true, and read_char should return 0
 +   tax
 	lda #0
+	sta anything_printed ; Signal that nothing has been printed since last read, to allow QUIT without MORE prompt
 	jmp z_store_result
 }
 	
@@ -293,6 +303,7 @@ z_ins_read
 	; z3: sread text parse
 	; z4: sread text parse time routine
 	; z5: aread text parse time routine -> (result)
+	inc input_counter
 	jsr printchar_flush
 
 !ifndef Z5PLUS {
@@ -342,7 +353,7 @@ z_ins_read
 
 !ifdef TRACE_READTEXT {
 	jsr print_following_string
-	!pet "read_text ",0
+	!text "read_text ",0
 	ldx z_operand_value_low_arr
 	lda z_operand_value_high_arr
 	jsr printx
@@ -435,7 +446,7 @@ z_ins_read
 !ifdef DEBUG {
 !ifdef PREOPT {
 	jsr print_following_string
-	!raw "[preopt mode. type xxx to exit early.]",13,0
+	!text "[preopt mode. type xxx to exit early.]",13,0
 !ifdef Z5PLUS {
 	ldy #2
 } else {
@@ -460,6 +471,7 @@ z_ins_read
 }
 !ifdef Z5PLUS {
 	lda #0
+	sta anything_printed ; Signal that nothing has been printed since last read, to allow QUIT without MORE prompt
 	ldx .read_text_return_value
 	jmp z_store_result
 } else {
@@ -504,6 +516,8 @@ z_ins_read
 +++	lda #0
 	sta undo_possible ; Set to not possible whenever we exit the read instruction
 }
+	lda #0
+	sta anything_printed ; Signal that nothing has been printed since last read, to allow QUIT without MORE prompt
 	rts
 }
 ; ============================= End of new unified read instruction
@@ -524,22 +538,24 @@ z_ins_print_unicode
 	jmp streams_print_output
 }
 	
-convert_zchar_to_char
+!macro convert_zchar_to_char {
 	; input: a=zchar
 	; output: a=char
 	; side effects:
 	; used registers: a,y
-	cmp #$20
-	beq +++
+;	cmp #$20
+;	beq +++
 	cmp #6
 	bcc +++
-	sec
-	sbc #6
-	clc
-	adc alphabet_offset
+;	sec
+;	sbc #6
+;	clc
+	adc alphabet_offset ; Carry is set, so this adds 1 too much
 	tay
-	lda z_alphabet_table,y
-+++	rts
+	lda z_alphabet_table - 7,y ; Should be - 6, but compensate for addition above
++++	
+}
+;	rts
 
 translate_petscii_to_zscii
 	ldx #character_translation_table_in_end - character_translation_table_in - 1
@@ -811,7 +827,7 @@ find_word_in_dictionary
 	stx .dictionary_address + 1
 	jsr set_z_address
 
-	; show the dictonary word
+	; show the dictionary word
 !ifdef TRACE_SHOW_DICT_ENTRIES {
 	jsr dollar
 	lda .dictionary_address
@@ -1029,21 +1045,6 @@ init_read_text_timer
 	sta .read_text_time_jiffy + 2
 	rol .read_text_time_jiffy + 1
 	rol .read_text_time_jiffy
-	; lda .read_text_time
-	; sta multiplier + 1
-	; lda .read_text_time + 1
-	; sta multiplier
-	; lda #0
-	; sta multiplicand + 1
-	; lda #6
-	; sta multiplicand ; t*6 to get jiffies
-	; jsr mult16
-	; lda product
-	; sta .read_text_time_jiffy + 2
-	; lda product + 1
-	; sta .read_text_time_jiffy + 1
-	; lda product + 2
-	; sta .read_text_time_jiffy
 update_read_text_timer
 	; prepare time for next routine call (current time + time_jiffy)
 !ifdef SMOOTHSCROLL {
@@ -1068,6 +1069,10 @@ getchar_and_maybe_toggle_darkmode
 	jsr wait_smoothscroll
 }
 	jsr kernal_getchar
+	cmp #0
+	bne +
+	jmp .did_nothing
++
 !ifndef NODARKMODE {
  	cmp #133 ; Charcode for F1
 	bne +
@@ -1115,6 +1120,7 @@ getchar_and_maybe_toggle_darkmode
 }
 	jmp .did_something
 +
+!ifndef TARGET_X16 {
 	cmp #11 ; Ctrl-K for key repeating
 	bne +
 	; Toggle key repeat (People using fast emulators want to turn it off)
@@ -1126,6 +1132,13 @@ getchar_and_maybe_toggle_darkmode
 	jmp .did_something
 +
 
+	cmp #4 ; Ctrl-D to forget device# for saves
+	bne +
+	; Forget device# for saves
+	dec ask_for_save_device ; Normally 0. Even if we decrease 100 times, we still get the same effect
+	jmp .did_something
++
+}
 !ifndef Z5PLUS {
 !ifdef UNDO {
 	cmp #21 ; Ctrl-U for Undo
@@ -1135,15 +1148,10 @@ getchar_and_maybe_toggle_darkmode
 	stx undo_requested
 	dec undo_possible
 	jmp .did_something
-+	
++
 }
 }
-
-	cmp #4 ; Ctrl-D to forget device# for saves
-	bne .did_nothing
-	; Forget device# for saves
-	dec ask_for_save_device ; Normally 0. Even if we decrease 100 times, we still get the same effect
-	; Fall through to .did_something
+	jmp .did_nothing
 	
 .did_something
 	ldx #2
@@ -1153,7 +1161,9 @@ getchar_and_maybe_toggle_darkmode
 	ldx .getchar_save_x
 	rts
 
-!ifdef SMOOTHSCROLL {
+!ifdef BENCHMARK {
+scroll_delay !byte 0 ; In benchmark mode, use fastest scrolling
+} else ifdef SMOOTHSCROLL {
 scroll_delay !byte 0
 } else {
 scroll_delay !byte 1 ; Start in fastest flicker-free + tear-free scroll speed
@@ -1218,18 +1228,29 @@ read_char
     ; check if we have a sound callback to run
 !ifdef SOUND {
     ; check if needed to run the @sound_effect routine argument
-    lda trigger_sound_routine
+    ldx sound_routine_queue_count
     beq .no_sound_trigger
-    lda #0
-    sta trigger_sound_routine
+	dec sound_routine_queue_count
     ; run the routine without arguments
     ; the routine address is in sound_arg_routine
     ; we are not interested in the return value
-    lda sound_arg_routine  + 1
+	lda sound_routine_queue_high
     sta z_operand_value_high_arr
-    ldx sound_arg_routine  
-    stx z_operand_value_low_arr
-    lda #z_exe_mode_return_from_read_interrupt
+	lda sound_routine_queue_low
+    sta z_operand_value_low_arr
+	; Rotate queue forward
+	ldx sound_routine_queue_count
+	beq + ; No queue left
+	ldx #0
+-	lda sound_routine_queue_high + 1,x
+	sta sound_routine_queue_high,x
+	lda sound_routine_queue_low + 1,x
+	sta sound_routine_queue_low,x
+	inx
+	cpx sound_routine_queue_count
+	bcc -
+	; Run routine
++   lda #z_exe_mode_return_from_read_interrupt
     ldx #0
     ldy #0
     jsr stack_call_routine
@@ -1618,10 +1639,121 @@ read_text
 !ifdef USE_HISTORY {
 	jsr add_line_to_history
 }
+
+!ifdef X_FOR_EXAMINE {
+	; Change "x" as the first word on the line, or after a full stop or comma, 
+	; into "examine", to work around older games which don't recognise this 
+	; themselves. We do this after adding the line to the history to try to 
+	; preserve the illusion "x" is supported natively.
+.x_index = zp_temp
+!ifdef Z5PLUS {
+	ldy #1
+} else {
+	ldy #0
+}
+.look_for_x
+	; Skip leading spaces, if any.
+-
+!ifdef Z5PLUS {
+	cpy .read_text_column
+	bcs .done_expanding_x
+}
+	iny
+	+macro_string_array_read_byte
+!ifndef Z5PLUS {
+	beq .done_expanding_x
+}
+	cmp #' '
+	beq -
+	cmp #'x'
+	bne .not_x
+	sty .x_index
+!ifdef Z5PLUS {
+	cpy .read_text_column
+	bcs .is_x
+}
+	iny
+	+macro_string_array_read_byte
+!ifndef Z5PLUS {
+	beq .is_x
+}
+	cmp #' '
+	beq .is_x
+	cmp #','
+	beq .is_x
+	cmp #'.'
+	bne .not_x
+.is_x
+	; Check if there is space to expand x to examine
+	lda .read_text_char_limit
+	sbc .read_text_column ; Carry is already set
+	cmp #6
+	bcc .done_expanding_x
+	; We have "x" at index .x_index
+	; Shuffle the rest of the line up to make room for "examine".
+	ldy .read_text_column
+!ifdef Z5PLUS {
+	cpy .x_index
+	beq .no_shuffle
+}
+-
+	+macro_string_array_read_byte
+	iny:iny:iny:iny:iny:iny
+	+macro_string_array_write_byte
+	dey:dey:dey:dey:dey:dey
+	dey
+	cpy .x_index
+	bne -
+.no_shuffle
+	; Replace "x" with "examine"
+	ldx #6
+-   lda .examine_reversed,x
+	+macro_string_array_write_byte
+	iny
+	dex
+	bpl -
+	; Add 6 to input length
+	lda .read_text_column
+	clc
+	adc #6
+	sta .read_text_column
+!ifdef Z5PLUS {
+	sty .x_index ; Temporary storage
+	ldy #1
+	sbc #0 ; Decrease by 1, since carry is clear
+	+macro_string_array_write_byte
+	ldy .x_index
+}
+	
+.not_x
+-
+!ifdef Z5PLUS {
+	cpy .read_text_column
+	bcs .done_expanding_x
+}
+	iny
+	+macro_string_array_read_byte
+!ifndef Z5PLUS {
+	beq .done_expanding_x
+}
+	cmp #'.'
+.jump_look
+	beq .look_for_x
+	cmp #','
+	beq .jump_look ; Do double jump because a direct jump is a byte too far, for z5
+	bne - ; Always branch
+.done_expanding_x	
+}
+
 	pla ; the terminating character, usually newline
 	beq +
-	jsr s_printchar; print terminating char unless 0 (0 indicates timer abort)
-+   rts
+	jmp s_printchar; print terminating char unless 0 (0 indicates timer abort)
++	rts
+
+!ifdef X_FOR_EXAMINE {
+.examine_reversed
+	!text "enimaxe"
+}
 
 !ifdef USE_HISTORY {
 	; MAIN DATASTRUCTURE:
@@ -2004,12 +2136,12 @@ tokenise_text
 .wordend    !byte 0 
 .ignore_unknown_words !byte 0 
 
-get_next_zchar
+!macro get_next_zchar {
 	; returns the next zchar in a
 	; side effects: z_address
 	; used registers: a,x,y
 	ldx zchar_triplet_cnt
-	cpx #2
+;	cpx #2
 	bne .just_read
 	; extract 3 zchars (5 bits each)
 	; stop bit remains in packed_text + 1
@@ -2018,50 +2150,57 @@ get_next_zchar
 	jsr read_next_byte
 	sta packed_text + 1
 	and #$1f
-	sta zchars
+	sta zchars + 2
 	lda packed_text
 	lsr
 	ror packed_text + 1
 	lsr
 	ror packed_text + 1
 	and #$1f
-	sta zchars + 2
+	sta zchars
 	lda packed_text + 1
 	lsr
 	lsr
 	lsr
 	sta zchars + 1	
-	ldx #0
+	ldx #1
 	bit packed_text
 	bpl +
-	inx
-+	stx packed_text + 1	
+	dex
++	stx packed_text + 1	 ; 0 means it's the last byte-pair
 	ldx zchar_triplet_cnt
 .just_read
 	lda zchars,x
-	dex
-	bpl +
+	inx
+	cpx #3
+	bcc +
+	ldx #0
++	stx zchar_triplet_cnt
+}
 
-init_get_zchar
+!macro init_get_zchar {
 	; Setup for reading zchars from packed string
 	; side effects: -
 	; used registers: x
-	ldx #2
-+	stx zchar_triplet_cnt
-	rts
+	ldx #0
+	stx zchar_triplet_cnt
+}
+;	rts
 	
 	
 ; .zchar_triplet_cnt !byte 0
 
-was_last_zchar
+!macro was_last_zchar {
 	; only call after a get_next_zchar
 	; returns a=0 if current zchar is the last zchar, else > 0
 	lda zchar_triplet_cnt ; 0 - 2
-	cmp #2
+;	cmp #2
 	bne +
 	lda packed_text + 1
-	eor #1
-+   rts
+;	eor #1
++
+}
+;   rts
 
 get_abbreviation_offset
 	; abbreviation is 32(abbreviation_command-1)+a
@@ -2097,9 +2236,9 @@ print_addr
 	sta alphabet_offset
 	sta escape_char_counter
 	sta abbreviation_command
-	jsr init_get_zchar
+	+init_get_zchar
 .print_chars_loop
-	jsr get_next_zchar
+	+get_next_zchar
 !ifndef Z1 {
 	ldy abbreviation_command
 	beq .l0
@@ -2141,13 +2280,15 @@ print_addr
 	jsr read_next_byte ; 0
 	pha
 	jsr read_next_byte ; 33
+	; abbreviation index is word, *2 for bytes, address is in first 128 KB
+	asl
 	tax
 	pla
-	jsr set_z_address
-	; abbreviation index is word, *2 for bytes
-	asl z_address + 2
-	rol z_address + 1 
-	rol z_address 
+	rol
+	ldy #0
+	bcc +
+	iny
++	jsr set_z_himem_address
 	; print the abbreviation
 	jsr print_addr
 	; restore state
@@ -2173,6 +2314,9 @@ print_addr
 	sta z_address + 1
 	pla
 	sta z_address
+!ifdef TARGET_X16 {
+	jsr x16_bank_z_address
+}
 	pla
 	tax
 	lda #0
@@ -2196,6 +2340,10 @@ print_addr
 	jsr streams_print_output
 	jmp .next_zchar
 .l0a 
+	; Regardsless of alphabet, code 8+ are always normal
+	cmp #8
+	bcs .l6
+
 	; If alphabet A2, special treatment for code 6 and 7!
 	ldy alphabet_offset
 	cpy #52
@@ -2306,7 +2454,7 @@ print_addr
 	sta abbreviation_command ; 1, 2 or 3
 	jmp .next_zchar
 .l6 ; normal char
-	jsr convert_zchar_to_char
+	+convert_zchar_to_char
 .print_normal_char
 	jsr streams_print_output
 .reset_alphabet
@@ -2319,7 +2467,7 @@ print_addr
 }
 	sta alphabet_offset
 .next_zchar
-	jsr was_last_zchar
+	+was_last_zchar
 	beq +
 	jmp .print_chars_loop
 +   rts
