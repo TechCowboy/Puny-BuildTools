@@ -1,12 +1,12 @@
 #!/bin/bash
 # agon.sh - Agon Light/Console8 release builder
-# Puny BuildTools, (c) 2025 Shawn Sijnstra
+# Puny BuildTools, (c) 2026 Shawn Sijnstra & Stefan Vogt
 
 #read config file 
 source config.sh
 
-echo -e "\nagon.sh 1.0 - Agon Light release builder"
-echo -e "Puny BuildTools, (c) 2026 Shawn Sijnstra\n"
+echo -e "\nagon.sh 1.1 - Agon Light release builder"
+echo -e "Puny BuildTools, (c) 2026 Shawn Sijnstra & Stefan Vogt\n"
 
 #story check / arrangement
 if ! [ -f ${STORY}.z${ZVERSION} ] ; then
@@ -22,10 +22,10 @@ fi
 
 #copy resources
 #place story in temporary directory
-mv STORY.DAT ~/FictionTools/Templates/Interpreters/Agontemp
+mv STORY.DAT ~/FictionTools/Templates/Interpreters/AgonTEMP
 
 #copy content to Release directory
-cp -r ~/FictionTools/Templates/Interpreters/Agontemp Releases/Agon
+cp -r ~/FictionTools/Templates/Interpreters/AgonTEMP Releases/Agon
 
 #check for loading screen and arrange resources
 if ! [ -f Resources/SCREEN.SCR ] ; then
