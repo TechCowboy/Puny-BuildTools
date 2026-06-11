@@ -1,18 +1,18 @@
 #!/bin/bash
-# Puny-Wan Kenobi - Updater & Permissions Editor 
-# Puny BuildTools, (c) 2025 Stefan Vogt
+# Puny-Wan Kenobi - Updater, Installer & Permissions Editor 
+# Puny BuildTools, (c) 2026 Stefan Vogt
 #
-# version 1.3
+# version 2.0
 
-echo "Puny-Wan Kenobi 1.3 - the update is strong with this one"
-echo -e "Puny BuildTools, (c) 2025 Stefan Vogt\n"
+echo "Puny-Wan Kenobi 2.0 - the update is strong with this one"
+echo -e "Puny BuildTools, (c) 2026 Stefan Vogt\n"
 
 if ! [ -d ~/FictionTools ]; then
     echo -e "'FictionTools' folder not found in home directory. Aborting program.\n"
     exit 1
 fi
 
-while getopts ':puhc' opts
+while getopts ':puhci' opts
 do
 	case $opts in
 		u)  # update
@@ -146,8 +146,175 @@ do
             exit 0
 		    ;;
 
-        h) 
-            echo -e "Provides updates via Git and uses the force to edit permissions.\n"  
+        i)  # install
+            echo -e "preparing the Puny BuildTools installation [...]\n"
+
+            # the Puny BuildTools must live in ~/FictionTools, since kenobi
+            # resides inside the repository it cannot relocate itself.
+            scriptDir="$(cd "$(dirname "$0")" && pwd)"
+            if [ "$scriptDir" != "$HOME/FictionTools" ]; then
+                echo -e "The Puny BuildTools must reside in '~/FictionTools'."
+                echo -e "Please clone the repository into '~/FictionTools' and run the"
+                echo -e "installer from there. Aborting program.\n"
+                exit 1
+            fi
+            cd "$HOME/FictionTools"
+
+            # --- 1. dependencies ------------------------------------------------
+            echo -e "The following packages will be installed via apt:\n"
+            echo -e "   frotz cpmtools dosfstools mtools git ruby imagemagick zip"
+            echo -e "   python3-pip libsdl1.2debian libsdl2-2.0-0 python-is-python3 libgl1\n"
+            read -r -p "Install these dependencies now? [y/N] " reply
+            if [[ "$reply" =~ ^[Yy]$ ]]; then
+                sudo apt update && sudo apt install -y frotz cpmtools dosfstools mtools git ruby imagemagick zip python3-pip libsdl1.2debian libsdl2-2.0-0 python-is-python3 libgl1
+                if [ $? -ne 0 ]; then
+                    echo -e "\nerror: the dependencies could not be installed. Aborting program.\n"
+                    exit 1
+                fi
+            else
+                echo -e "\nThe dependencies are required to proceed. Aborting program.\n"
+                exit 1
+            fi
+
+            # --- 2. shell environment (.bashrc) ---------------------------------
+            echo -e "\nconfiguring your shell environment [...]"
+            echo -e "(auto-detecting your host system: Linux, macOS/OrbStack or WSL2)\n"
+            bashrc="$HOME/.bashrc"
+            addSource () {
+                if grep -qxF "$1" "$bashrc" 2>/dev/null; then
+                    echo "-> already present: $1"
+                else
+                    echo "$1" >> "$bashrc"
+                    echo "-> added: $1"
+                fi
+            }
+            addSource "source ~/FictionTools/.punyrc"
+            kernel="$(uname -r)"
+            if echo "$kernel" | grep -qi "orbstack"; then
+                echo "-> detected macOS host (OrbStack)"
+                addSource "source ~/FictionTools/.punyorb"
+            elif echo "$kernel" | grep -qi "microsoft"; then
+                echo "-> detected Windows host (WSL2)"
+                addSource "source ~/FictionTools/.punywsl"
+            else
+                echo "-> detected native Linux host"
+            fi
+
+            # --- 3. cpmtools diskdefs (SAM Coupe / DEC Rainbow) -----------------
+            echo -e "\nteaching cpmtools about SAM Coupe and DEC Rainbow disks [...]\n"
+            diskdefs="/etc/cpmtools/diskdefs"
+            if sudo grep -q "diskdef prodos" "$diskdefs" 2>/dev/null; then
+                echo "-> diskdefs already configured, skipping"
+            else
+                read -r -p "Append the required diskdefs to $diskdefs (requires sudo)? [y/N] " reply
+                if [[ "$reply" =~ ^[Yy]$ ]]; then
+                    sudo tee -a "$diskdefs" > /dev/null <<'EOF'
+
+diskdef prodos
+  seclen 512
+  tracks 160
+  sectrk 9
+  maxdir 256
+  blocksize 2048
+  boottrk 1
+  skew 0
+  os 2.2
+end
+
+# DEC2 DEC Rainbow - SSDD 96 tpi 5.25" - 512 x 10
+  diskdef dec2
+  seclen 512
+  tracks 80
+  sectrk 10
+  blocksize 2048
+  maxdir 128
+  skew 2
+  boottrk 2
+  os 2.2
+end
+EOF
+                    if [ $? -ne 0 ]; then
+                        echo -e "\nerror: could not write to $diskdefs. Aborting program.\n"
+                        exit 1
+                    fi
+                    echo "-> diskdefs configured"
+                else
+                    echo -e "\nThe diskdefs are required to proceed. Aborting program.\n"
+                    exit 1
+                fi
+            fi
+
+            # --- 4. amitools (Amiga target) ------------------------------------
+            echo -e "\ninstalling amitools for the Amiga target [...]\n"
+            read -r -p "Install amitools now? This pulls from GitHub and may take a while. [y/N] " reply
+            if [[ "$reply" =~ ^[Yy]$ ]]; then
+                pip3 install cython --break-system-packages && pip3 install -U git+https://github.com/cnvogelg/machine68k.git --break-system-packages && pip3 install -U "amitools[vamos] @ git+https://github.com/cnvogelg/amitools.git" --break-system-packages
+                if [ $? -ne 0 ]; then
+                    echo -e "\nerror: amitools could not be installed. Aborting program.\n"
+                    exit 1
+                fi
+            else
+                echo -e "\namitools is required for the Amiga target. Aborting program.\n"
+                exit 1
+            fi
+
+            # --- 5. PunyInform path (.pi6rc) -----------------------------------
+            echo -e "\nconfiguring the path to your PunyInform library [...]\n"
+            pi6rc="$HOME/FictionTools/.pi6rc"
+            current="$(grep -E '^lib=' "$pi6rc" 2>/dev/null | head -1 | cut -d'=' -f2-)"
+            if [ -n "$current" ]; then
+                echo -e "A PunyInform path is already set:\n   $current\n"
+                read -r -p "Press Enter to keep it, or type a new path to replace it: " newpath
+            else
+                read -r -p "Enter the path to your PunyInform 'lib' directory (trailing slash required): " newpath
+            fi
+            if [ -n "$newpath" ]; then
+                expanded="${newpath/#\~/$HOME}"
+                if [ ! -d "$expanded" ]; then
+                    echo -e "warning: '$newpath' does not exist as a directory."
+                    read -r -p "Use it anyway? [y/N] " reply
+                    [[ "$reply" =~ ^[Yy]$ ]] || { echo -e "Aborting program.\n"; exit 1; }
+                fi
+                if grep -qE '^lib=' "$pi6rc" 2>/dev/null; then
+                    sed -i "s|^lib=.*|lib=$newpath|" "$pi6rc"
+                else
+                    echo "lib=$newpath" >> "$pi6rc"
+                fi
+                echo "-> PunyInform path set to: $newpath"
+            elif [ -z "$current" ]; then
+                echo -e "error: no PunyInform path provided. Aborting program.\n"
+                exit 1
+            else
+                echo "-> keeping existing PunyInform path"
+            fi
+
+            # --- 6. permission self-check --------------------------------------
+            echo -e "\nverifying component permissions [...]\n"
+            permIssues=0
+            for f in puny pi6 Templates/Resources/bundle.sh ifftool.sh cpcscr.sh \
+                     degaspi1.sh scrload/makescr.sh Templates/dos.sh \
+                     Templates/amiga.sh Templates/Resources/all.sh; do
+                if [ ! -x "$f" ]; then
+                    echo "   not executable: $f"
+                    permIssues=$((permIssues + 1))
+                fi
+            done
+            if [ "$permIssues" -eq 0 ]; then
+                echo "-> permissions check passed, all components are go."
+            else
+                echo -e "-> $permIssues component(s) need attention."
+                echo -e "   run 'kenobi -p' to fix them, then 'kenobi -i' again."
+            fi
+
+            # --- done ----------------------------------------------------------
+            echo -e "\nThe installation is complete."
+            echo -e "Please close this terminal and open a new one so your shell"
+            echo -e "changes take effect.\n"
+            exit 0
+		    ;;
+
+        h)
+            echo -e "Provides updates via Git and uses the force to install \nthe Puny Buildtools and edit permissions.\n"
             echo -e "Switches:"
             echo -e "   [kenobi -u] -> initate update"
             echo -e "   fetches the latest changes from the Puny BuildTools repository\n"
@@ -155,6 +322,8 @@ do
             echo -e "   checks if the bundled applications have the right permissions\n"
             echo -e "   [kenobi -p] -> edit permissions"
             echo -e "   sets and fixes permissions for all bundled applications\n"
+            echo -e "   [kenobi -i] -> install the Puny BuildTools"
+            echo -e "   guides you through the full installation on a fresh system\n"
             echo -e "   [kenobi -h] -> show this help menu\n"
             ;;
 
