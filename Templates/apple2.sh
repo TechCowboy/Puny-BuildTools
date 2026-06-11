@@ -1,12 +1,12 @@
 #!/bin/bash
 # apple2.sh - Apple II disk builder
-# Puny BuildTools, (c) 2024 Stefan Vogt
+# Puny BuildTools, (c) 2026 Stefan Vogt
 
 #read config file 
 source config.sh
 
-echo -e "\napple2.sh 2.6 - Apple II disk builder"
-echo -e "Puny BuildTools, (c) 2024 Stefan Vogt\n"
+echo -e "\napple2.sh 3.0 - Apple II disk builder"
+echo -e "Puny BuildTools, (c) 2026 Stefan Vogt\n"
 
 #story check / arrangement
 if ! [ -f ${STORY}.z${ZVERSION} ] ; then
@@ -16,9 +16,16 @@ fi
 
 z3_hack_infocom()
 {
-    echo -e "applying Infocom interpreter hack [...]"
+    echo -e "applying Infocom interpreter z3 hack [...]"
     interlz3 ~/FictionTools/Templates/Interpreters/info3k.bin ${STORY}.z3 ${STORY}_apple2.dsk
     echo -e "Apple II disk with Infocom interpreter successfully built.\n"
+}
+
+z5_hack_infocom()
+{
+    echo -e "applying Infocom interpreter z5 hack [...]"
+    interlz3 ~/FictionTools/Templates/Interpreters/info5h.bin ${STORY}.z5 ${STORY}_apple2.dsk
+    echo -e "Apple II disks with Infocom interpreter successfully built.\n"
 }
 
 default_build()
@@ -55,6 +62,8 @@ fi
 #is the Infocom interpreter hack set in config?
 if [[ -v APPLE2_Z3_INFOCOM ]] ; then
     buildWithHack=true
+elif [[ -v APPLE2_Z5_INFOCOM ]] ; then
+    buildWithHack=true
 else
     buildWithHack=false
 fi
@@ -62,6 +71,8 @@ fi
 zvalue="$ZVERSION"
 if [[ $zvalue == 3 && $buildWithHack == true ]] ; then
     z3_hack_infocom
+elif [[ $zvalue == 5 && $buildWithHack == true ]] ; then
+    z5_hack_infocom
 else
     default_build
 fi
