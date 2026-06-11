@@ -5,8 +5,8 @@
 #read config file 
 source config.sh
 
-echo -e "\ntrs80_m3.sh 2.6 - TRS80 Model 3 disk builder"
-echo -e "Puny BuildTools, (c) 2024 Stefan Vogt\n"
+echo -e "\ntrs80_m3.sh 3.0 - TRS80 Model 3 disk builder"
+echo -e "Puny BuildTools, (c) 2026 Stefan Vogt\n"
 
 #story check / arrangement
 if ! [ -f ${STORY}.z${ZVERSION} ] ; then
