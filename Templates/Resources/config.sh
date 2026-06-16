@@ -4,7 +4,7 @@
 
 # --- project settings: --------------------------------------------------
 
-# your Inform source or story file without .inf/.z3/.z5 suffix 
+# your source or story file without .inf/.z3/.z5 suffix 
 STORY="myproject"
 
 # Z-machine version this project compiles to, 3 and 5 supported
