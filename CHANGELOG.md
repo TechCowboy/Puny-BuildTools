@@ -5,7 +5,6 @@
 * updated Inform 6 compiler to latest trunk
 * added Ceres, a clean-room Z-machine version 5 interpreter (6809 assembly) for the TRS-80 Color Computer 1/2 and the Dragon 64
 * TRS CoCo and Dragon 64 promoted from deprecated to full targets, now supporting Z-machine version 5 (via Ceres) in addition to version 3
-* Dragon 64 version 5 build is a single self-booting DragonDOS disk
 * split the combined trs_coco_dragon64 builder into separate trs_coco and dragon64 targets
 * added mkdsk.py, a dependency-free Python disk image builder for the Ceres targets
 * Agon Light is now a build target, includes the whole family e.g. Console8
