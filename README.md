@@ -29,7 +29,9 @@ Already on a `Debian 13 "Trixie"` host? (On `Windows` or `MacOS`, set up Debian 
 sudo apt install git && mkdir ~/FictionTools && cd ~/FictionTools && git clone https://github.com/ByteProject/Puny-BuildTools.git . && ./kenobi -i
 ```
 
-Restart your terminal and you're ready to build. New here, or want the details? Head to [Installation](#installation).
+That's it. That single command installs the Puny BuildTools **completely**: `kenobi -i` pulls in every dependency, detects your host system and configures your shell for you. Restart your terminal afterwards and you're ready to build, no further steps required.
+
+Prefer to do it the hard way? The [Installation](#installation) chapter walks you through the guided installer in detail and, for those who like to suffer, documents the full manual installation as well.
 
 ## Build Targets
 
