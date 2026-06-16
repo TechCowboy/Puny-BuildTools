@@ -9,7 +9,7 @@ main()
 {
 	printf "all.sh - building disk images [...]\n"
 	# Z-machine version 5 systems (recommended)
-    puny -b c64 -b apple2 -b bbc_acorn -b speccy -b plus4 -b macintosh -b atari_st -b mega65 -b msx -b trs80_m3 -b trs80_m4 -b c128 -b sam_coupe -b cpc_pcw -b dos -b amiga -b a8bit -b agon -b next -b trs_coco -b dragon64
+    puny -b c64 -b apple2 -b bbc_acorn -b speccy -b plus4 -b macintosh -b atari_st -b mega65 -b msx -b trs80_m3 -b trs80_m4 -b c128 -b sam_coupe -b cpc_pcw -b dos -b amiga -b a8bit -b agon -b next -b trs_coco -b dragon64 -b x16
 }
 
 deprecated()

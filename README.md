@@ -35,7 +35,7 @@ Restart your terminal and you're ready to build. New here, or want the details? 
 
 The following targets support Z-machine version 5 (XZIP) and Z-machine version 3 (ZIP) story files:
 
-_C64, Amiga, Spectrum +3, Amstrad CPC/PCW, Atari ST, Atari 8-bit, MS-DOS, MSX, BBC Micro/Acorn Electron, C128, Plus/4, Apple II, SAM Coupe, TRS80 Model 3, TRS80 Model 4, TRS CoCo, Dragon 64, Mega65, Spectrum Next, Agon Light, classic Macintosh, modern PC._
+_C64, Amiga, Spectrum +3, Amstrad CPC/PCW, Atari ST, Atari 8-bit, MS-DOS, MSX, BBC Micro/Acorn Electron, C128, Plus/4, Apple II, SAM Coupe, TRS80 Model 3, TRS80 Model 4, TRS CoCo, Dragon 64, Mega65, Spectrum Next, Agon Light, Commander X16, classic Macintosh, modern PC._
 
 > Note: Puny BuildTools projects by default are configured to target Z-machine version 5 and it's strongly recommended to keep it that way. The format is less restrictive and offers more options. The Z-machine version is defined in your project's config file. The BuildTools will ignore other Z-machine versions than 5 (default) or 3. Please consider that the Puny BuildTools are not intended to target mixed Z-machine versions. All targets will be built using the Z-machine version defined in your project's config file.
 

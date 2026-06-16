@@ -139,6 +139,7 @@ while getopts ':iectb:haosv' opt; do
       echo "SAM     [-b sam_coupe]  TRS M3    [-b trs80_m3]   TRS M4       [-b trs80_m4]"
       echo "Mega65  [-b mega65]     Macintosh [-b macintosh]  Agon Light   [-b agon]"
       echo "CoCo    [-b trs_coco]   Dragon 64 [-b dragon64]   Next         [-b next]"
+      echo "Cdr.X16 [-b x16]"
       echo -e "\nDeprecated systems (only supporting Z-machine v3):"
       echo "[-b vic20_pet]    [-b decrainbow]    [-b osborne1]    [-b ti99]"
       echo -e "[-b oric]         [-b kaypro]\n"
@@ -170,8 +171,9 @@ while getopts ':iectb:haosv' opt; do
       echo "[c64 2.1] [amiga 2.0] [speccy 2.5] [cpc_pcw 2.5] [atari_st 2.0] [a8bit 3.0]"
       echo "[dos 2.2] [msx 2.5] [bbc_acorn 2.2] [c128 2.2] [plus4 2.1] [apple2 3.0]" 
       echo "[sam_coupe 2.5] [trs80_m3 3.0] [trs80_m4 3.0] [mega65 2.1] [macintosh 2.0]"
-      echo "[agon 1.1] [next 1.0] [trs_coco 2.0] [dragon64 2.0]"
-      echo -e "[vic20_pet 1.5] [decrainbow 1.0] [osborne1 1.0] [ti99 1.5] [oric 1.5] [kaypro 1.0] \n"
+      echo "[agon 1.1] [next 1.0] [trs_coco 2.0] [dragon64 2.0] [x16 1.0]"
+      echo "[vic20_pet 1.5] [decrainbow 1.0] [osborne1 1.0] [ti99 1.5] [oric 1.5]"
+      echo -e "[kaypro 1.0] \n"
       exit 0
       ;;
 

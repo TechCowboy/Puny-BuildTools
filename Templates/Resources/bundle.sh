@@ -57,6 +57,11 @@ while getopts ':t:h' opt; do
             zip ${STORY}_${RELEASE}.zip ${STORY}_dragon64.vdk
         fi
 
+        # Commander X16 (ZIP-mode Ozmoo target)
+        if [ -f ${STORY}_x16.zip ] ; then
+            zip ${STORY}_${RELEASE}.zip ${STORY}_x16.zip
+        fi
+
         # in case you also build a target with the hidden -b c128_d64.sh switch
         if [ -f ${STORY}_c128.d64 ] ; then
             zip ${STORY}_${RELEASE}.zip ${STORY}_c128.d64
