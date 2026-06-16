@@ -1,6 +1,6 @@
 #!/bin/bash
 # puny CLI - The Puny BuildTools command-line interface 
-# Copyright (c) 2025 Stefan Vogt
+# Copyright (c) 2026 Stefan Vogt
 
 #read config file
 if [ -f config.sh ] ; then
@@ -35,8 +35,8 @@ do_compile()
   fi
 }
 
-printf "puny CLI 2.4_%s" "$gitversion"
-printf " | Unknown Transmission\n\n"
+printf "puny CLI 3.0_%s" "$gitversion"
+printf " | Starlit Path\n\n"
 
 while getopts ':iectb:haosv' opt; do
   case "$opt" in
@@ -132,15 +132,16 @@ while getopts ':iectb:haosv' opt; do
 
     o) # target listing
       echo "Target systems:"
-      echo "C64     [-b c64]        Amiga     [-b amiga]      ZX Spectrum  [-b speccy]"
+      echo "C64     [-b c64]        Amiga     [-b amiga]      Spectrum +3  [-b speccy]"
       echo "CPC/PCW [-b cpc_pcw]    Atari ST  [-b atari_st]   Atari 8-bit  [-b a8bit]"
       echo "MS-DOS  [-b dos]        MSX       [-b msx]        BBC/Electron [-b bbc_acorn]"
       echo "C128    [-b c128]       Plus/4    [-b plus4]      Apple II     [-b apple2]"
       echo "SAM     [-b sam_coupe]  TRS M3    [-b trs80_m3]   TRS M4       [-b trs80_m4]"
-      echo "Mega65  [-b mega65]     Macintosh [-b macintosh]"
+      echo "Mega65  [-b mega65]     Macintosh [-b macintosh]  Agon Light   [-b agon]"
+      echo "CoCo    [-b trs_coco]   Dragon 64 [-b dragon64]   Next         [-b next]"
       echo -e "\nDeprecated systems (only supporting Z-machine v3):"
-      echo "[-b vic20_pet]    [-b decrainbow]    [-b trs_coco_dragon64]    [-b osborne1]"
-      echo -e "[-b ti99]         [-b oric]          [-b kaypro]\n"
+      echo "[-b vic20_pet]    [-b decrainbow]    [-b osborne1]    [-b ti99]"
+      echo -e "[-b oric]         [-b kaypro]\n"
       exit 0
       ;;
 
@@ -159,17 +160,18 @@ while getopts ':iectb:haosv' opt; do
 
     v) # version information
       echo "the Puny BuildTools command-line interface"
-      echo "Copyright (c) 2025, Stefan Vogt"
+      echo "Copyright (c) 2026, Stefan Vogt"
       echo "https://github.com/ByteProject/Puny-BuildTools"
       echo -e "\n| component versions: |"
-      echo "[CLI 2.2] [pi6 3.0] [bundle.sh 2.2] [Puny-Wan Kenobi 1.3]"
+      echo "[CLI 3.0] [pi6 3.0] [bundle.sh 2.3] [Puny-Wan Kenobi 2.0]"
       echo "[makescr.sh 1.0] [ifftool.sh 1.2] [cpcscr.sh 1.0] [degaspi1.sh 1.0]"
+      echo "[nextscr.sh 1.0]"
       echo -e "\n| module versions: |"
       echo "[c64 2.1] [amiga 2.0] [speccy 2.5] [cpc_pcw 2.5] [atari_st 2.0] [a8bit 3.0]"
-      echo "[dos 2.2] [msx 2.5] [bbc_acorn 2.2] [c128 2.2] [plus4 2.1] [apple2 2.6]" 
-      echo "[sam_coupe 2.5] [trs80_m3 2.6] [trs80_m4 2.6] [mega65 2.1] [macintosh 2.0]"
-      echo "[vic20_pet 1.5] [decrainbow 1.0] [trs_coco_dragon64 1.5] [osborne1 1.0]"
-      echo -e "[ti99 1.5] [oric 1.5] [kaypro 1.0]\n"
+      echo "[dos 2.2] [msx 2.5] [bbc_acorn 2.2] [c128 2.2] [plus4 2.1] [apple2 3.0]" 
+      echo "[sam_coupe 2.5] [trs80_m3 3.0] [trs80_m4 3.0] [mega65 2.1] [macintosh 2.0]"
+      echo "[agon 1.1] [next 1.0] [trs_coco 2.0] [dragon64 2.0]"
+      echo -e "[vic20_pet 1.5] [decrainbow 1.0] [osborne1 1.0] [ti99 1.5] [oric 1.5] [kaypro 1.0] \n"
       exit 0
       ;;
 

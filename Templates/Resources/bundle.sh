@@ -1,15 +1,15 @@
 #!/bin/bash
 # Puny BuildTools
 # bundle.sh - the game release archiver
-# (c) 2024 Stefan Vogt
+# (c) 2026 Stefan Vogt
 
 # bundles your game files and places them in an archive at a given path
 
 #read config file 
 source config.sh
 
-echo "bundle.sh 2.2 - the game release archiver"
-echo -e "Puny BuildTools, (c) 2024 Stefan Vogt\n"
+echo "bundle.sh 2.3 - the game release archiver"
+echo -e "Puny BuildTools, (c) 2026 Stefan Vogt\n"
 
 while getopts ':t:h' opt; do
   case "$opt" in
@@ -21,29 +21,49 @@ while getopts ':t:h' opt; do
         cp Releases/PlayIF.pdf .
         cp Releases/readme.txt .
         cp Releases/licenses.txt .
-        cp Releases/game.transcript .
         cp ~/FictionTools/Templates/Interpreters/ProDOS_SAM.dsk .
         cp ~/FictionTools/Templates/Interpreters/CPM_Plus_speccy.dsk .
         cp -R Releases/DOS .
         cp -R Releases/Agon .
-        if [ -f ${STORY}_dragon64.vdk ] ; then
+        cp -R Releases/Next .
+        if [[ $ZVERSION == 3 && -f ${STORY}_dragon64.vdk ]] ; then
             cp ~/FictionTools/Templates/Interpreters/dragon64_loader.vdk .
         fi
       
         # bundle disk images
-        zip -r ${STORY}_${RELEASE}.zip ${STORY}_apple2_s1.dsk ${STORY}_apple2_s2.dsk ${STORY}_speccy.dsk ${STORY}_amiga.adf ${STORY}_atari8bit.atr ${STORY}_c128.d71 ${STORY}_plus4.d64 ${STORY}_c64.d64 ${STORY}_mega65.d81 ${STORY}_cpc_pcw.dsk ${STORY}_atarist.st ${STORY}.z5 ${STORY}_bbc_elk.ssd ${STORY}_MSX.dsk ${STORY}_trs80_m3.dsk ${STORY}_trs80_m4.dsk CPM_Plus_speccy.dsk ${STORY}_mac.dsk ${STORY}_sam_coupe.cpm ProDOS_SAM.dsk PlayIF.pdf readme.txt licenses.txt game.transcript DOS Agon
+        zip -r ${STORY}_${RELEASE}.zip ${STORY}_apple2_s1.dsk ${STORY}_apple2_s2.dsk ${STORY}_speccy.dsk ${STORY}_amiga.adf ${STORY}_atari8bit.atr ${STORY}_c128.d71 ${STORY}_plus4.d64 ${STORY}_c64.d64 ${STORY}_mega65.d81 ${STORY}_cpc_pcw.dsk ${STORY}_atarist.st ${STORY}.z5 ${STORY}_bbc_elk.ssd ${STORY}_MSX.dsk ${STORY}_trs80_m3.dsk ${STORY}_trs80_m4.dsk CPM_Plus_speccy.dsk ${STORY}_mac.dsk ${STORY}_sam_coupe.cpm ProDOS_SAM.dsk PlayIF.pdf readme.txt licenses.txt DOS Agon Next
 
-        # in case you also build a target with the hidden -b c128_d64.sh switch 
+        # optional release documents, skipped if the author removed them
+        if [ -f Releases/walkthrough.txt ] ; then
+            cp Releases/walkthrough.txt .
+            zip ${STORY}_${RELEASE}.zip walkthrough.txt
+            rm walkthrough.txt
+        fi
+        if [ -f Releases/invisiclues.txt ] ; then
+            cp Releases/invisiclues.txt .
+            zip ${STORY}_${RELEASE}.zip invisiclues.txt
+            rm invisiclues.txt
+        fi
+
+        # TRS-80 CoCo and Dragon 64 (z3 and z5)
+        if [ -f ${STORY}_trs_coco.dsk ] ; then
+            zip ${STORY}_${RELEASE}.zip ${STORY}_trs_coco.dsk
+        fi
+        if [ -f ${STORY}_dragon64.vdk ] ; then
+            # the z3 Dragon disk needs the separate loader, the z5 disk self-boots
+            if [[ $ZVERSION == 3 ]] ; then
+                zip ${STORY}_${RELEASE}.zip dragon64_loader.vdk
+            fi
+            zip ${STORY}_${RELEASE}.zip ${STORY}_dragon64.vdk
+        fi
+
+        # in case you also build a target with the hidden -b c128_d64.sh switch
         if [ -f ${STORY}_c128.d64 ] ; then
             zip ${STORY}_${RELEASE}.zip ${STORY}_c128.d64
         fi
         # Z-machine version 3 only targets (deprecated) start here
         if [ -f ${STORY}.z3 ] ; then
             zip ${STORY}_${RELEASE}.zip ${STORY}.z3
-        fi
-        if [ -f ${STORY}_dragon64.vdk ] ; then
-            zip ${STORY}_${RELEASE}.zip dragon64_loader.vdk
-            zip ${STORY}_${RELEASE}.zip ${STORY}_dragon64.vdk
         fi
         if [ -f ${STORY}_ti99.dsk ] ; then
             zip ${STORY}_${RELEASE}.zip ${STORY}_ti99.dsk
@@ -54,9 +74,6 @@ while getopts ':t:h' opt; do
         fi
         if [ -f ${STORY}_vic20_pet.d64 ] ; then
             zip ${STORY}_${RELEASE}.zip ${STORY}_vic20_pet.d64
-        fi
-        if [ -f ${STORY}_trs_coco.dsk ] ; then
-            zip ${STORY}_${RELEASE}.zip ${STORY}_trs_coco.dsk
         fi
         if [ -f ${STORY}_osborne1.cpm ] ; then
             zip ${STORY}_${RELEASE}.zip ${STORY}_osborne1.cpm
@@ -72,12 +89,13 @@ while getopts ':t:h' opt; do
         rm PlayIF.pdf
         rm readme.txt
         rm licenses.txt
-        rm game.transcript
         rm CPM_Plus_speccy.dsk
-        rm dragon64_loader.vdk
+        rm -f dragon64_loader.vdk
         rm ProDOS_SAM.dsk
         cp ${STORY}_${RELEASE}.zip ${OPTARG}
         rm -rf DOS
+        rm -rf Agon
+        rm -rf Next
         rm ${STORY}_${RELEASE}.zip
         echo -e "\nDistribution archive for '${STORY}' successfully generated."
       else
