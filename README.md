@@ -2,15 +2,40 @@
 
 Welcome brave adventurer! If you're still into classic 8-bit / 16-bit home computers and Infocom style adventure games you may want to rest here for a while. The Puny BuildTools provide a command-line interface to [PunyInform](https://github.com/johanberntsson/PunyInform), a lightweight but powerful [Inform 6](https://github.com/DavidKinder/Inform6) library, optimized to perform well on old hardware. The Puny BuildTools assist interactive fiction authors as a project management solution for Infocom Z-machine games. They make the whole process of development fast, streamlined and accessible, from structuring your project to compilation, testing, building disk images for retro systems, converting pixel artworks to loading screens compatible with classic targets and bundling your releases for distribution.
 
+## Contents
+
+- [Quick start](#quick-start)
+- [Build Targets](#build-targets)
+- [Host](#host)
+- [Installation](#installation)
+- [The Puny CLI](#the-puny-cli)
+- [An Author's Guide to the Galaxy](#an-authors-guide-to-the-galaxy)
+- [Bonus Content](#bonus-content)
+- [Hacks](#hacks)
+- [Special notes on interpreters](#special-notes-on-interpreters)
+- [Deprecated targets](#deprecated-targets)
+- [Credits](#credits)
+- [License](#license)
+
 ## Current version
 
-`2.3` Andromeda Calling
+`3.0` Starlit Path
+
+## Quick start
+
+Already on a `Debian 13 "Trixie"` host? (On `Windows` or `MacOS`, set up Debian first via WSL2 or OrbStack, see [Host](#host).) Install [PunyInform](https://github.com/johanberntsson/PunyInform), then run:
+
+```
+sudo apt install git && mkdir ~/FictionTools && cd ~/FictionTools && git clone https://github.com/ByteProject/Puny-BuildTools.git . && ./kenobi -i
+```
+
+Restart your terminal and you're ready to build. New here, or want the details? Head to [Installation](#installation).
 
 ## Build Targets
 
 The following targets support Z-machine version 5 (XZIP) and Z-machine version 3 (ZIP) story files:
 
-_C64, Amiga, ZX Spectrum, Amstrad CPC/PCW, Atari ST, Atari 8-bit, MS-DOS, MSX, BBC Micro/Acorn Electron, C128, Plus/4, Apple II, SAM Coupe, TRS80 Model 3, TRS 80 Model 4, Mega65, Agon Light/Console8, classic Macintosh, modern PC._
+_C64, Amiga, Spectrum +3, Amstrad CPC/PCW, Atari ST, Atari 8-bit, MS-DOS, MSX, BBC Micro/Acorn Electron, C128, Plus/4, Apple II, SAM Coupe, TRS80 Model 3, TRS80 Model 4, TRS CoCo, Dragon 64, Mega65, Spectrum Next, Agon Light, classic Macintosh, modern PC._
 
 > Note: Puny BuildTools projects by default are configured to target Z-machine version 5 and it's strongly recommended to keep it that way. The format is less restrictive and offers more options. The Z-machine version is defined in your project's config file. The BuildTools will ignore other Z-machine versions than 5 (default) or 3. Please consider that the Puny BuildTools are not intended to target mixed Z-machine versions. All targets will be built using the Z-machine version defined in your project's config file.
 
@@ -18,7 +43,7 @@ You can use the built-in feature to compile your story from source but the proje
 
 There are also a few deprecated targets available, coincidentally only supporting Z-machine version 3:
 
-_VIC20/PET, DEC Rainbow, TRS CoCo/Dragon64, Osborne1, Ti99/4a, Oric, Kaypro._
+_VIC20/PET, DEC Rainbow, Osborne1, Ti99/4a, Oric, Kaypro._
 
 > Note: You can force to build the deprecated targets either one by one using the `-b` switch for `Puny CLI` or by using the `-d` switch when running the `all.sh` switch from your project root. See `Puny CLI` documentation. But beware: there are reasons why those systems are deprecated. You find these documented in the `Deprecated targets` section of this guide.
 
@@ -28,77 +53,86 @@ The Puny BuildTools are designed for `Linux (64-bit)` systems. They've been deve
 
 If you're on `Windows 10` (or later) you can run the Puny BuildTools via [WSL2](https://learn.microsoft.com/en-us/windows/wsl/about). Refer to the WSL2 docs on how to install Debian.
 
-If you work on `MacOS`, I can't recommend [OrbStack](https://orbstack.dev/) enough. Make sure you set up a Debian machine with Intel architecture. The OrbStack documentation covers this topic well.
+If you work on `MacOS`, I can't recommend [OrbStack](https://orbstack.dev/) enough. Make sure you set up a Debian machine with Intel architecture. The OrbStack documentation covers this topic well. Your Mac might require to have Rosetta installed.
 
 ## Installation
 
-Below instructions are intended for `Debian 12 "Bookworm"` (or later). Generally, the recommended system for the Puny BuildTools is `Debian` itself as it offers the most stability. As already stated, `Debian` derivates like `Ubuntu` or `Linux Mint `should be fine but remain untested.
+Below instructions are intended for `Debian 13 "Trixie"` (or later).
 
-Open a Bash terminal. In your home directory, create a folder named `FictionTools` with 
+The Puny BuildTools come with a guided installer, which is part of the BuildTools updater tool `Puny-Wan Kenobi`. It takes care of the entire setup for you.
 
-```
-mkdir ~/FictionTools
-```
+### Before you begin
 
-The Puny BuildTools require some dependencies. Install these via a single command: 
+The Puny BuildTools compile your games against the [PunyInform](https://github.com/johanberntsson/PunyInform) library, so install PunyInform first if you haven't already. Take note of the path to its `lib` directory, as the installer will ask you for it.
 
-```
-sudo apt update && sudo apt install frotz cpmtools dosfstools mtools git ruby imagemagick zip python3-pip libsdl1.2debian libsdl2-2.0-0 python-is-python3
-```
+### 1. Get the BuildTools
 
-When prompted to install additional dependencies, type `Y` to confirm. Switch to the folder you created and use Git to load the newest version from GitHub:
+The Puny BuildTools live in a folder named `FictionTools` in your home directory. You need `git` to fetch them, so open a Bash terminal and type:
 
 ```
-cd ~/FictionTools && git clone https://github.com/ByteProject/Puny-BuildTools.git .
+sudo apt install git && mkdir ~/FictionTools && cd ~/FictionTools && git clone https://github.com/ByteProject/Puny-BuildTools.git .
 ```
 
-Let's use `Puny-Wan Kenobi` to check if the Puny BuildTools have sufficient permissions to run on your system by typing:
+### 2. Run the installer
+
+Now let `Puny-Wan Kenobi` do the rest:
 
 ```
-cd ~/FictionTools && ./kenobi -c
+./kenobi -i
 ```
 
-This usually is the case since Git keeps track of the executable bit of a file. If so, you can skip the troubleshooting part below.
+Kenobi guides you through the whole setup, asking for confirmation before any step that requires `sudo`. Step by step, it will:
 
-> **Permissions Troubleshooting**: Should Bash tell you that you don't have sufficient permissions to run `kenobi`, or should `kenobi` itself report errors for some of the components and modules, you can use it to fix these. Again, only do the command below if you got errors reported or cannot run kenobi: 
+- install all required dependencies
+- detect your host system (native `Linux`, `MacOS` via OrbStack or `Windows / WSL2`) and configure your shell environment accordingly
+- teach `cpmtools` to handle disk images for SAM Coupe and DEC Rainbow
+- install the `amitools` required for the Amiga target
+- ask for the path to your PunyInform library
+- verify that all components have the right permissions
+
+The installer is safe to run again at any time. It only changes what isn't already in place, so you can re-run it after a system upgrade or a fresh checkout without messing up your setup.
+
+### 3. Restart your terminal
+
+Close all Terminal windows now and open a new Bash instance, so that the changes to your shell environment take effect. That's it, you've completed the setup!
+
+> **If `./kenobi` won't run**: on rare occasions the executable bit may be missing, for example after copying files around locally without preserving permissions. Restore it and let Kenobi fix the rest, then run the installer again:
+> ```
+> chmod 755 kenobi && ./kenobi -p && ./kenobi -i
+> ```
+
+<details>
+<summary><b>Manual installation</b> (advanced / for the curious)</summary>
+
+You don't need any of this if you used `./kenobi -i`. It's documented here only so you know exactly what the installer does, and as a reference should you ever want to perform a step by hand.
+
+Install the dependencies:
 
 ```
-cd ~/FictionTools && chmod 755 kenobi && ./kenobi -p
+sudo apt update && sudo apt install frotz cpmtools dosfstools mtools git ruby imagemagick zip python3-pip libsdl1.2debian libsdl2-2.0-0 python-is-python3 libgl1
 ```
 
-> This may take some time. Should you ever need to fix permissions again, simply run `kenobi -p`.
-
-Next, you need to make sure all environment variables and paths are properly set on your system. Launch `nano` to edit your Bash resource file. The next step depends on which host system you are using, so I recommend reading it carefully.
-
-```
-nano ~/.bashrc
-```
-
-In case you're on `Linux` add this entry:
+Add the matching entry to your `~/.bashrc`. On `Linux`:
 
 ```
 source ~/FictionTools/.punyrc
 ```
 
-For `MacOS`, make sure the entry looks like this:
+On `MacOS` (OrbStack):
 
 ```
 source ~/FictionTools/.punyrc
 source ~/FictionTools/.punyorb
 ```
 
-In case you're on `Windows / WSL2`, the entry needs to look like this instead:
+On `Windows / WSL2`:
 
 ```
 source ~/FictionTools/.punyrc
 source ~/FictionTools/.punywsl
 ```
 
-After you've made your changes, hit `CTRL X` to exit Nano. Make sure you select `Y` when you're asked to save the modified buffer.
-
-It's recommended to close all Terminal windows now and then open a new Bash instance. The changes you've made to `.bashrc` have now been applied.
-
-Next, teach `cpmtools` to handle disk images for SAM Coupe and DEC Rainbow. In your Bash prompt, type `sudo nano /etc/cpmtools/diskdefs` and add the following code:
+Teach `cpmtools` to handle disk images for SAM Coupe and DEC Rainbow by adding the following to `/etc/cpmtools/diskdefs` (edit it with `sudo nano /etc/cpmtools/diskdefs`):
 
 ```
 diskdef prodos
@@ -125,27 +159,19 @@ end
 end
 ```
 
-For making the Amiga target work, you need to install the `amitools` Python package. But first install its dependencies:
+Install the `amitools` required for the Amiga target:
 
 ```
-pip3 install cython --break-system-packages && pip3 install -U git+https://github.com/cnvogelg/machine68k.git --break-system-packages
+pip3 install cython --break-system-packages && pip3 install -U git+https://github.com/cnvogelg/machine68k.git --break-system-packages && pip3 install -U "amitools[vamos] @ git+https://github.com/cnvogelg/amitools.git" --break-system-packages
 ```
 
-Now install `amitools`:
-
-```
-pip3 install -U git+https://github.com/cnvogelg/amitools.git --break-system-packages
-```
-
-One final step remains: providing the Puny BuildTools with the path to your PunyInform installation. In case you haven't installed PunyInform yet, do so now. You'll find it [here](https://github.com/johanberntsson/PunyInform). 
-
-Type below command and enter the path to your PunyInform installation, then save.
+Finally, provide the path to your PunyInform `lib` directory by editing the `lib=` line in `~/FictionTools/.pi6rc`:
 
 ```
 nano ~/FictionTools/.pi6rc
 ```
 
-Congratulations! You've completed the setup.
+</details>
 
 ## The Puny CLI
 
@@ -175,7 +201,7 @@ Initialize the project directory. This is the first thing you have to do before 
 
 > project root: all.sh, bundle.sh, config.sh
 
-> /Releases directory: game.transcript, licenses.txt, PlayIF.pdf, readme.txt
+> /Releases directory: walkthrough.txt, invisiclues.txt, licenses.txt, PlayIF.pdf, readme.txt
 
 > /Resources directory: pixel_guide.txt
 
@@ -191,7 +217,7 @@ Compile your project to a Z-machine story file. Inform source file and Z-machine
 
 #### puny -a
 
-Create highly optimized abbrevations. While this feature is optional, it's recommended to make use of it. Abbrevations are tokens of text compression. The better the compression, the smaller the story file, the higher the performance on retro computers. Please refer to the [abbrevations chapter](https://github.com/johanberntsson/PunyInform/wiki/manual#abbreviations) of the PunyInform manual to learn more about it. The optimized abbrevations are written to a file named `abbrvs.h` in the project directory, which you can import by adding `Include ">abbrvs.h";` to your Inform source file. Do so very early in your source as the Inform compiler is a one pass compiler, meaning strings found in your code before you include the abbreviatons won't be compressed. You also need to add these lines of code at the very beginning of your source file:
+Create highly optimized abbreviations. While this feature is optional, it's recommended to make use of it. Abbreviations are tokens of text compression. The better the compression, the smaller the story file, the higher the performance on retro computers. Please refer to the [abbreviations chapter](https://github.com/johanberntsson/PunyInform/wiki/manual#abbreviations) of the PunyInform manual to learn more about it. The optimized abbreviations are written to a file named `abbrvs.h` in the project directory, which you can import by adding `Include ">abbrvs.h";` to your Inform source file. Do so very early in your source as the Inform compiler is a one pass compiler, meaning strings found in your code before you include the abbreviations won't be compressed. You also need to add these lines of code at the very beginning of your source file:
 
 ```
 !% $MAX_ABBREVS=96
@@ -212,7 +238,7 @@ See the full range of target systems available for the build feature. Will also 
 
 Shows some examples of how you would use the Puny CLI.
 
-#### show -v
+#### puny -v
 
 Shows version information for all components and modules of the Puny BuildTools.
 
@@ -242,17 +268,17 @@ You'll find the resulting disk images right in your project folder. It's really 
 ./all.sh
 ```
 
-and it will build all supported targets at once. To be more precise, it is configured to build all targets at once that support Z-machine version 5, which means you get 17 disk images for 19 classic computer systems. The whole build process takes only a few seconds. You can edit the `all.sh` script of course to suite your needs. That's why the script is placed locally in your project's root folder, so you may alter it based on the project's scope. In case you want it to build the deprecated targets as well, run it with the `-d` switch, like this `./all.sh -d`. Deprecated targets are only available if targeting Z-machine version 3, so if you build your project for Z-machine 5, these are skipped anyway.
+and it will build all supported targets at once. To be more precise, it is configured to build all targets at once that support Z-machine version 5. The whole build process takes only a few seconds. You can edit the `all.sh` script of course to suit your needs. That's why the script is placed locally in your project's root folder, so you may alter it based on the project's scope. In case you want it to build the deprecated targets as well, run it with the `-d` switch, like this `./all.sh -d`. Deprecated targets are only available if targeting Z-machine version 3, so if you build your project for Z-machine 5, these are skipped anyway.
 
 There is one more thing to know. You probably noticed the `Resources` folder that has been created when you initiated the project directory. Puny CLI will look into this folder upon building a target. When it finds a pixel artwork with the right format in it, Puny CLI will build a disk image for you with a proper loading screen. Not all targets support loading screens, but many targets do. If you look into the `Resources` folder, you'll find `pixel_guide.txt`, which explains in detail how to create the pixel artworks for all supported systems. 
 
 > Note: Loading screens are purely optional. If you don't provide one in `Resources`, the target is built without. The Puny BuildTools support you in rapidly creating screens though for quite a few targets. Some great utilities have been crafted exclusively for the Puny BuildTools for said purpose. You'll learn more about them in the "Bonus Content" section of this documentation.
 
-> Note: The Agon Light/Console8 and MS-DOS targets do not create disk images. Instead they place the output in folders `Agon` and `DOS` respectively, inside the `Releases` folder in your project directory.
+> Note: The Agon Light, MS-DOS and ZX Spectrum Next targets do not create disk images. Instead they place the output in folders `Agon`, `DOS` and `Next` respectively, inside the `Releases` folder in your project directory.
 
 ## An Author's Guide to the Galaxy
 
-This part of the documentation aims to give you a real-life example of how one would work with the Puny BuildTools. Let's assume for a moment you have that great vision for your next best-selling interactive fiction epos called "The Galaxy".
+This part of the documentation aims to give you a real-life example of how one would work with the Puny BuildTools. Let's assume for a moment you have that great vision for your next best-selling interactive fiction epic called "The Galaxy".
 
 The first thing you'll need to take care of is creating a project directory and navigate to it via `mkdir Galaxy && cd Galaxy`.
 
@@ -274,13 +300,13 @@ What happens now is solely based on your awesomeness. You start developing your 
 
 Once you're done, it's recommended to create optimized abbreviations with the `puny -a` switch. How to properly import these and make use of them has already been covered earlier in this documentation. 
 
-So your game is done and the size of the story file has been optimized. Now it's about preparing the release. You decide to roll out your game on all supported retro systems, which means you don't need to alter the `all.sh` executable script in the project directory. And why would you. The more systems you're game will be available for, the bigger the addressable target audience.
+So your game is done and the size of the story file has been optimized. Now it's about preparing the release. You decide to roll out your game on all supported retro systems, which means you don't need to alter the `all.sh` executable script in the project directory. And why would you. The more systems your story will be available for, the bigger the addressable target audience.
 
 You choose to go the extra mile and provide loading screens, so you do as advised in `Resources/pixel_guide.txt`.
 
 You use the `all.sh` script to create disk images for all supported systems.
 
-In the `Releases` folder, which had been created when you initiated the project directory, you find a few files that you might want to alter. The file `readme.txt` contains loading instructions for all supported targets, but you may want to add additional content here, for example the gameplay or credits, really any information you want to player to receive together with your game. The file `game.transcript` is empty. You may choose to replace it with an actual transcript of your game, the alternative is that you delete the file and it won't be added to the release bundle. The file `licenses.txt` needs to remain and you're not allowed to delete content from it. However, you are allowed to append a license text for your project to it, if applicable. The `PlayIF.pdf` card is a slightly improved version of the "Play IF" card Andrew Plotkin (Zarf) once made. If you don't want to distribute it with your game, you can delete it but I strongly recommend to keep it in as there are only advantages for the player when doing so. It also means that you don't need to focus too much on general mechanics in your manual / `readme.txt`.
+In the `Releases` folder, which had been created when you initiated the project directory, you find a few files that you might want to alter. The file `readme.txt` contains loading instructions for all supported targets, but you may want to add additional content here, for example the gameplay or credits, really any information you want to player to receive together with your game. The files `walkthrough.txt` and `invisiclues.txt` are placeholders. You may replace them with an actual walkthrough and a set of InvisiClues-style hints for your game. If you'd rather not provide one or both, simply delete the file in question and it won't be added to the release bundle. The file `licenses.txt` needs to remain and you're not allowed to delete content from it. However, you are allowed to append a license text for your project to it, if applicable. The `PlayIF.pdf` card is a slightly improved version of the "Play IF" card Andrew Plotkin (Zarf) once made. If you don't want to distribute it with your game, you can delete it but I strongly recommend to keep it in as there are only advantages for the player when doing so. It also means that you don't need to focus too much on general mechanics in your manual / `readme.txt`.
 
 > Note: It's important that you don't rename the files found in `Releases`, because otherwise they won't be added to the release bundle.
 
@@ -360,6 +386,12 @@ degaspi1.sh is, as the name implies, an Atari ST (Degas .PI1) screen maker. It c
 
 makescr.sh is a ZX Spectrum screen maker. Please refer to the `pixel_guide.txt` found in the `Resources` folder of your project to learn how to use it.
 
+### nextscr.sh
+
+nextscr.sh is a ZX Spectrum Next screen maker. It converts a .BMP image file (16-256 colors, 320x256 pixels, 8-bit) to a Spectrum Next loading screen in .NXI format. The output will be `screen.nxi`.
+
+Type `nextscr.sh -h` for the help menu.
+
 ### The 'punycustom' folder
 
 By default, the folder `punycustom` does not exist. However, if you find the feature useful, you may create it via 
@@ -377,17 +409,43 @@ Hacks are settings which you can add to the configuration file of your project t
 #### APPLE2_Z3_INFOCOM=true
 Builds Apple II Z-machine version 3 targets with Infocom's interpreter version K instead of Vezza. This hack is ignored if `ZVERSION 5` is defined in your project's configuration file.
 
+#### APPLE2_Z5_INFOCOM=true
+Builds Apple II Z-machine version 5 targets with Infocom's own Apple II z5 interpreter instead of Vezza. Infocom's original release of this interpreter was buggy. The one used here is a community-repaired version of it. Since it has been modified and is provided as-is, use it at your own risk. That's why it is offered as a hack rather than as the default interpreter. Its main advantage is that it runs without a CP/M card, whereas the default Apple II z5 build boots from a CP/M system disk. This hack is ignored if `ZVERSION 3` is defined in your project's configuration file.
+
+## Special notes on interpreters
+
+### Blank save disks for CoCo and Dragon 64
+
+The TRS-80 Color Computer 1/2 and the Dragon 64 support saving and restoring your game progress to a dedicated save disk. The bundled `mkdsk.py` utility can create a blank, formatted save disk for both machines.
+
+For the CoCo, create a blank RS-DOS save disk like this:
+
+```
+mkdsk.py -o save.dsk --blank
+```
+
+For the Dragon 64, create a blank DragonDOS save disk like this:
+
+```
+mkdsk.py -o save.vdk --dragon --blank
+```
+
+### Ceres on CoCo and Dragon 64
+
+When targeting Z-machine version 5, the TRS-80 Color Computer 1/2 and the Dragon 64 are powered by `Ceres`, a clean-room Z-machine version 5 interpreter. On the Dragon 64, the version 5 disk is a single self-booting image: the player just inserts it and types `BOOT`. On the CoCo, the version 5 disk boots with `RUN"CERES"`. Both targets still support Z-machine version 3 as well. Their disk images are built with the bundled `mkdsk.py`, a self-contained Python utility that needs no further dependencies.
+
 ## Deprecated targets
 
 Some of the build targets are deprecated and flagged as such in Puny CLI. I've tried to document the reasons why below. Note that the issues listed per system are not considered complete and you may encounter even more issues. You can force building deprecated targets either one-by-one using Puny CLI or using the `-d` flag when running the `all.sh` script in your project dir like this `./all.sh -d`.
 
 > Disclaimer: use deprecated targets at your own risk and don't come at me if something is not working as intended. It's recommended to only use build targets which are not flagged as deprecated in Puny CLI, since these have been tested well and offer a proven track of reliability.
 
+<details>
+<summary><b>Per-system notes</b> (why each target is deprecated)</summary>
+
 - VIC-20 / PET: Very slow third-party interpreter. Won't offer a good experience to players. You'll also need at least 32kb of RAM. On VIC-20, this requires you to plug in a memory-expansion cartridge. On PET, you may need to upgrade the built-in RAM to 32kb. So your game won't run out of the box on these machines.
 
 - DEC Rainbow 100: Due to the lack of emulators, this interpreter is completely untested and for that, cannot be recommended. This is the only interpreter that Infocom ever released for the DEC Rainbow and it is a very old interpreter. The last game that Infocom released for this machine was Infidel. If you, by any chance, get this running, I would expect bugs. 
-
-- Dragon64 / TRS CoCo: The Dragon64 interpreter seems to only work in emulations. The disk image is not suitable to be written to a real Dragon64 disk. If your target audience can live with that, you're good to go. Please note that you explicitly need a Dragon64, as the interpreter won't run on a Dragon32 machine. Since the Dragon and the TRS CoCo are relatives, the Dragon interpreter is based on the CoCo interpreter. The CoCo target on the other hand uses a mature interpreter, which seems to be save to use. It is slow though and has a narrow screen so it doesn't offer the best experience.
 
 - Osborne 1: This is a generic CPM interpreter which does not offer a statusline. Note that Osborne1 disks are very small (only 91kb) and you need to subtract the interpreter and some system files from that value. If your story file exceeds 68k, it makes no sense to build this target.
 
@@ -396,6 +454,8 @@ Some of the build targets are deprecated and flagged as such in Puny CLI. I've t
 - Oric: This interpreter generally works well but would require more testing. And it needs a modified drive in case you want to play this on real hardware. Fine to use with emulators though.
 
 - Kaypro: Generic third-party CPM interpreter which doesn't offer a statusline. I found this interpreter on the internet but I was never able to actually test it on a Kaypro machine. The disk image cannot be loaded in an emulator since the Kaypro emulators out there only support awkward formats and not the output generated cpmtools.
+
+</details>
 
 ## Credits
 

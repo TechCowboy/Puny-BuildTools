@@ -1,5 +1,28 @@
 # Changelog
 
+## 3.0 (Starlit Path)
+* Debian Trixie compatibility, various improvements and structural updates
+* updated Inform 6 compiler to latest trunk
+* added Ceres, a clean-room Z-machine version 5 interpreter (6809 assembly) for the TRS-80 Color Computer 1/2 and the Dragon 64
+* TRS CoCo and Dragon 64 promoted from deprecated to full targets, now supporting Z-machine version 5 (via Ceres) in addition to version 3
+* Dragon 64 version 5 build is a single self-booting DragonDOS disk
+* split the combined trs_coco_dragon64 builder into separate trs_coco and dragon64 targets
+* added mkdsk.py, a dependency-free Python disk image builder for the Ceres targets
+* Agon Light is now a build target, includes the whole family e.g. Console8
+* Commander X16 is now a build target
+* ZX Spectrum Next is now a build target (prior only supported through bare z-file)
+* nextscr tool for producing ZX Spectrum Next loading screens in .nxi format
+* replaced TRS-80 disk builder with Linux-native binary
+* TRS-80 Model 3 and 4 targets now supported under MacOS (OrbStack) hosts
+* Wine dependency dropped completely, everything runs Linux-native on Debian, WSL2, OrbStack
+* added hacked Infocom z5 interpreter for Apple II that needs no CP/M (see hacks for usage)
+* updated Ozmoo to latest version
+* some of the VEZZA binaries have been updated to the latest version 
+* updated miscancellous existing build templates 
+* updated installation instructions, documentation and pixel guide
+* updated build.sh utility to reflect latest structural changes
+* added support to include walkthrough.txt and invisiclues.txt files
+
 ## 2.4 (Unknown Transmission)
 
 * updated Inform 6 compiler to latest trunk
