@@ -1,6 +1,6 @@
 #!/bin/bash
 # next.sh - ZX Spectrum Next release builder
-# Puny BuildTools, (c) 2026 Shawn Sijnstra & Stefan Vogt
+# Puny BuildTools, (c) 2026 Stefan Vogt
 
 #read config file 
 source config.sh
@@ -29,10 +29,10 @@ cp -r ~/FictionTools/Templates/Interpreters/NextTEMP Releases/Next
 
 #check for loading screen and arrange resources
 if ! [ -f Resources/screen.nxi ] ; then
-    echo "No SCREEN.NXI found in /Resources dir."
+    echo "No screen.nxi found in /Resources dir."
     echo -e "Spectrum Next release without loading screen successfully built.\n"
 else
     cp Resources/screen.nxi Releases/Next
-    echo "SCREEN.NXI found in /Resources dir."
+    echo "screen.nxi found in /Resources dir."
     echo -e "Spectrum Next release with loading screen successfully built.\n"
 fi
