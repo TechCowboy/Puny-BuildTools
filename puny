@@ -136,7 +136,7 @@ while getopts ':iectb:haosv' opt; do
       echo "CPC/PCW [-b cpc_pcw]    Atari ST  [-b atari_st]   Atari 8-bit  [-b a8bit]"
       echo "MS-DOS  [-b dos]        MSX       [-b msx]        BBC/Electron [-b bbc_acorn]"
       echo "C128    [-b c128]       Plus/4    [-b plus4]      Apple II     [-b apple2]"
-      echo "SAM     [-b sam_coupe]  TRS M3    [-b trs80_m3]   TRS M4       [-b trs80_m4]"
+      echo "SAM     [-b sam_coupe]  TRS-80 M3 [-b trs80_m3]   TRS-80 M4    [-b trs80_m4]"
       echo "Mega65  [-b mega65]     Macintosh [-b macintosh]  Agon Light   [-b agon]"
       echo "CoCo    [-b trs_coco]   Dragon 64 [-b dragon64]   Next         [-b next]"
       echo "Cdr.X16 [-b x16]"
