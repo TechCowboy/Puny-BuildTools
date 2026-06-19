@@ -15,6 +15,7 @@
 * TRS-80 Model 3 and 4 targets now supported under MacOS (OrbStack) hosts
 * Wine dependency dropped completely, everything runs Linux-native on Debian, WSL2, OrbStack
 * added hacked Infocom z5 interpreter for Apple II that needs no CP/M (see hacks for usage)
+* the Apple II z5 Infocom hack now auto-builds a two-disk set (with a .nib second disk) for stories too large for one disk
 * updated Ozmoo to latest version
 * some of the VEZZA binaries have been updated to the latest version 
 * updated miscancellous existing build templates 
