@@ -5,10 +5,10 @@
 
 # bundles your game files and places them in an archive at a given path
 
-#read config file 
+#read config file
 source config.sh
 
-echo "bundle.sh 2.3 - the game release archiver"
+echo "bundle.sh 2.4 - the game release archiver"
 echo -e "Puny BuildTools, (c) 2026 Stefan Vogt\n"
 
 while getopts ':t:h' opt; do
@@ -17,32 +17,68 @@ while getopts ':t:h' opt; do
       arg="$OPTARG"
       if [ -d ${OPTARG} ]; then
         echo "Generating '${RELEASE}' archive [...] path: ${OPTARG}"
-      
-        cp Releases/PlayIF.pdf .
-        cp Releases/readme.txt .
-        cp Releases/licenses.txt .
-        cp ~/FictionTools/Templates/Interpreters/ProDOS_SAM.dsk .
-        cp ~/FictionTools/Templates/Interpreters/CPM_Plus_speccy.dsk .
-        cp -R Releases/DOS .
-        cp -R Releases/Agon .
-        cp -R Releases/Next .
-        if [[ $ZVERSION == 3 && -f ${STORY}_dragon64.vdk ]] ; then
-            cp ~/FictionTools/Templates/Interpreters/dragon64_loader.vdk .
-        fi
-      
-        # bundle disk images
-        zip -r ${STORY}_${RELEASE}.zip ${STORY}_speccy.dsk ${STORY}_amiga.adf ${STORY}_atari8bit.atr ${STORY}_c128.d71 ${STORY}_plus4.d64 ${STORY}_c64.d64 ${STORY}_mega65.d81 ${STORY}_cpc_pcw.dsk ${STORY}_atarist.st ${STORY}.z5 ${STORY}_bbc_elk.ssd ${STORY}_MSX.dsk ${STORY}_trs80_m3.dsk ${STORY}_trs80_m4.dsk CPM_Plus_speccy.dsk ${STORY}_mac.dsk ${STORY}_sam_coupe.cpm ProDOS_SAM.dsk PlayIF.pdf readme.txt licenses.txt DOS Agon Next
 
-        # optional release documents, skipped if the author removed them
-        if [ -f Releases/walkthrough.txt ] ; then
-            cp Releases/walkthrough.txt .
-            zip ${STORY}_${RELEASE}.zip walkthrough.txt
-            rm walkthrough.txt
+        # Every artifact below is added only if it was actually built. This way
+        # a locally customized all.sh that targets a subset of systems still
+        # bundles cleanly, without 'name not matched' warnings.
+
+        # --- recommended targets ------------------------------------------
+        if [ -f ${STORY}_c64.d64 ] ; then
+            zip ${STORY}_${RELEASE}.zip ${STORY}_c64.d64
         fi
-        if [ -f Releases/invisiclues.txt ] ; then
-            cp Releases/invisiclues.txt .
-            zip ${STORY}_${RELEASE}.zip invisiclues.txt
-            rm invisiclues.txt
+        if [ -f ${STORY}_amiga.adf ] ; then
+            zip ${STORY}_${RELEASE}.zip ${STORY}_amiga.adf
+        fi
+        if [ -f ${STORY}_atari8bit.atr ] ; then
+            zip ${STORY}_${RELEASE}.zip ${STORY}_atari8bit.atr
+        fi
+        if [ -f ${STORY}_atarist.st ] ; then
+            zip ${STORY}_${RELEASE}.zip ${STORY}_atarist.st
+        fi
+        if [ -f ${STORY}_cpc_pcw.dsk ] ; then
+            zip ${STORY}_${RELEASE}.zip ${STORY}_cpc_pcw.dsk
+        fi
+        if [ -f ${STORY}_mega65.d81 ] ; then
+            zip ${STORY}_${RELEASE}.zip ${STORY}_mega65.d81
+        fi
+        if [ -f ${STORY}_plus4.d64 ] ; then
+            zip ${STORY}_${RELEASE}.zip ${STORY}_plus4.d64
+        fi
+        if [ -f ${STORY}_c128.d71 ] ; then
+            zip ${STORY}_${RELEASE}.zip ${STORY}_c128.d71
+        fi
+        if [ -f ${STORY}_bbc_elk.ssd ] ; then
+            zip ${STORY}_${RELEASE}.zip ${STORY}_bbc_elk.ssd
+        fi
+        if [ -f ${STORY}_MSX.dsk ] ; then
+            zip ${STORY}_${RELEASE}.zip ${STORY}_MSX.dsk
+        fi
+        if [ -f ${STORY}_mac.dsk ] ; then
+            zip ${STORY}_${RELEASE}.zip ${STORY}_mac.dsk
+        fi
+        if [ -f ${STORY}_trs80_m3.dsk ] ; then
+            zip ${STORY}_${RELEASE}.zip ${STORY}_trs80_m3.dsk
+        fi
+        if [ -f ${STORY}_trs80_m4.dsk ] ; then
+            zip ${STORY}_${RELEASE}.zip ${STORY}_trs80_m4.dsk
+        fi
+        # modern PC / bare Z-machine version 5 story file
+        if [ -f ${STORY}.z5 ] ; then
+            zip ${STORY}_${RELEASE}.zip ${STORY}.z5
+        fi
+
+        # Spectrum +3 ships alongside its CP/M boot disk
+        if [ -f ${STORY}_speccy.dsk ] ; then
+            cp ~/FictionTools/Templates/Interpreters/CPM_Plus_speccy.dsk .
+            zip ${STORY}_${RELEASE}.zip ${STORY}_speccy.dsk CPM_Plus_speccy.dsk
+            rm CPM_Plus_speccy.dsk
+        fi
+
+        # SAM Coupe ships alongside its ProDOS boot disk
+        if [ -f ${STORY}_sam_coupe.cpm ] ; then
+            cp ~/FictionTools/Templates/Interpreters/ProDOS_SAM.dsk .
+            zip ${STORY}_${RELEASE}.zip ${STORY}_sam_coupe.cpm ProDOS_SAM.dsk
+            rm ProDOS_SAM.dsk
         fi
 
         # Apple II (default CP/M two-disk set, single-disk hack, or two-disk z5 hack with .nib)
@@ -66,7 +102,9 @@ while getopts ':t:h' opt; do
         if [ -f ${STORY}_dragon64.vdk ] ; then
             # the z3 Dragon disk needs the separate loader, the z5 disk self-boots
             if [[ $ZVERSION == 3 ]] ; then
+                cp ~/FictionTools/Templates/Interpreters/dragon64_loader.vdk .
                 zip ${STORY}_${RELEASE}.zip dragon64_loader.vdk
+                rm dragon64_loader.vdk
             fi
             zip ${STORY}_${RELEASE}.zip ${STORY}_dragon64.vdk
         fi
@@ -76,10 +114,28 @@ while getopts ':t:h' opt; do
             zip ${STORY}_${RELEASE}.zip ${STORY}_x16.zip
         fi
 
+        # folder-output targets (built into the Releases directory)
+        if [ -d Releases/DOS ] ; then
+            cp -R Releases/DOS .
+            zip -r ${STORY}_${RELEASE}.zip DOS
+            rm -rf DOS
+        fi
+        if [ -d Releases/Agon ] ; then
+            cp -R Releases/Agon .
+            zip -r ${STORY}_${RELEASE}.zip Agon
+            rm -rf Agon
+        fi
+        if [ -d Releases/Next ] ; then
+            cp -R Releases/Next .
+            zip -r ${STORY}_${RELEASE}.zip Next
+            rm -rf Next
+        fi
+
         # in case you also build a target with the hidden -b c128_d64.sh switch
         if [ -f ${STORY}_c128.d64 ] ; then
             zip ${STORY}_${RELEASE}.zip ${STORY}_c128.d64
         fi
+
         # Z-machine version 3 only targets (deprecated) start here
         if [ -f ${STORY}.z3 ] ; then
             zip ${STORY}_${RELEASE}.zip ${STORY}.z3
@@ -104,23 +160,46 @@ while getopts ':t:h' opt; do
             zip ${STORY}_${RELEASE}.zip ${STORY}_decrainbow.cpm
         fi
 
-        #cleanup
-        rm PlayIF.pdf
-        rm readme.txt
-        rm licenses.txt
-        rm CPM_Plus_speccy.dsk
-        rm -f dragon64_loader.vdk
-        rm ProDOS_SAM.dsk
-        cp ${STORY}_${RELEASE}.zip ${OPTARG}
-        rm -rf DOS
-        rm -rf Agon
-        rm -rf Next
-        rm ${STORY}_${RELEASE}.zip
-        echo -e "\nDistribution archive for '${STORY}' successfully generated."
+        # --- release documents, added only if present in the Releases dir ---
+        if [ -f Releases/readme.txt ] ; then
+            cp Releases/readme.txt .
+            zip ${STORY}_${RELEASE}.zip readme.txt
+            rm readme.txt
+        fi
+        if [ -f Releases/licenses.txt ] ; then
+            cp Releases/licenses.txt .
+            zip ${STORY}_${RELEASE}.zip licenses.txt
+            rm licenses.txt
+        fi
+        if [ -f Releases/PlayIF.pdf ] ; then
+            cp Releases/PlayIF.pdf .
+            zip ${STORY}_${RELEASE}.zip PlayIF.pdf
+            rm PlayIF.pdf
+        fi
+        if [ -f Releases/walkthrough.txt ] ; then
+            cp Releases/walkthrough.txt .
+            zip ${STORY}_${RELEASE}.zip walkthrough.txt
+            rm walkthrough.txt
+        fi
+        if [ -f Releases/invisiclues.txt ] ; then
+            cp Releases/invisiclues.txt .
+            zip ${STORY}_${RELEASE}.zip invisiclues.txt
+            rm invisiclues.txt
+        fi
+
+        # deliver the archive to the requested path and clean up
+        if [ -f ${STORY}_${RELEASE}.zip ] ; then
+            cp ${STORY}_${RELEASE}.zip ${OPTARG}
+            rm ${STORY}_${RELEASE}.zip
+            echo -e "\nDistribution archive for '${STORY}' successfully generated."
+        else
+            echo -e "\nNothing was built, so no archive was generated. Operation aborted.\n"
+            exit 1
+        fi
       else
         echo -e "The path you provided does not exist. Operation aborted.\n"
         exit 1
-      fi  
+      fi
       ;;
 
     h)
