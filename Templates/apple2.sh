@@ -24,8 +24,23 @@ z3_hack_infocom()
 z5_hack_infocom()
 {
     echo -e "applying Infocom interpreter z5 hack [...]"
-    interlz3 ~/FictionTools/Templates/Interpreters/info5h.bin ${STORY}.z5 ${STORY}_apple2.dsk
-    echo -e "Apple II disks with Infocom interpreter successfully built.\n"
+    # First try a single-disk build. If the interpreter and story together
+    # exceed one disk, interlz5 produces no .dsk and asks for a two-disk set.
+    interlz5 ~/FictionTools/Templates/Interpreters/info5h.bin ${STORY}.z5 ${STORY}_apple2.dsk </dev/null
+    if [ -f ${STORY}_apple2.dsk ] ; then
+        echo -e "Apple II disk with Infocom interpreter successfully built.\n"
+    else
+        # Too large for one disk: build a two-disk set automatically. The second
+        # disk is a headerless nibble image (.nib).
+        echo -e "Interpreter and story exceed one disk, building a two-disk set [...]"
+        interlz5 ~/FictionTools/Templates/Interpreters/info5h.bin ${STORY}.z5 ${STORY}_apple2_s1.dsk ${STORY}_apple2_s2.nib </dev/null
+        if [ -f ${STORY}_apple2_s1.dsk ] && [ -f ${STORY}_apple2_s2.nib ] ; then
+            echo -e "Apple II two-disk set (Side 1 + Side 2) with Infocom interpreter successfully built.\n"
+        else
+            echo -e "Apple II two-disk build failed. Operation aborted.\n"
+            exit 1
+        fi
+    fi
 }
 
 default_build()
@@ -57,6 +72,9 @@ if [ -f ${STORY}_apple2_s2.dsk ] ; then
 fi
 if [ -f ${STORY}_apple2.dsk ] ; then
     rm ${STORY}_apple2.dsk
+fi
+if [ -f ${STORY}_apple2_s2.nib ] ; then
+    rm ${STORY}_apple2_s2.nib
 fi
 
 #is the Infocom interpreter hack set in config?

@@ -31,7 +31,7 @@ while getopts ':t:h' opt; do
         fi
       
         # bundle disk images
-        zip -r ${STORY}_${RELEASE}.zip ${STORY}_apple2_s1.dsk ${STORY}_apple2_s2.dsk ${STORY}_speccy.dsk ${STORY}_amiga.adf ${STORY}_atari8bit.atr ${STORY}_c128.d71 ${STORY}_plus4.d64 ${STORY}_c64.d64 ${STORY}_mega65.d81 ${STORY}_cpc_pcw.dsk ${STORY}_atarist.st ${STORY}.z5 ${STORY}_bbc_elk.ssd ${STORY}_MSX.dsk ${STORY}_trs80_m3.dsk ${STORY}_trs80_m4.dsk CPM_Plus_speccy.dsk ${STORY}_mac.dsk ${STORY}_sam_coupe.cpm ProDOS_SAM.dsk PlayIF.pdf readme.txt licenses.txt DOS Agon Next
+        zip -r ${STORY}_${RELEASE}.zip ${STORY}_speccy.dsk ${STORY}_amiga.adf ${STORY}_atari8bit.atr ${STORY}_c128.d71 ${STORY}_plus4.d64 ${STORY}_c64.d64 ${STORY}_mega65.d81 ${STORY}_cpc_pcw.dsk ${STORY}_atarist.st ${STORY}.z5 ${STORY}_bbc_elk.ssd ${STORY}_MSX.dsk ${STORY}_trs80_m3.dsk ${STORY}_trs80_m4.dsk CPM_Plus_speccy.dsk ${STORY}_mac.dsk ${STORY}_sam_coupe.cpm ProDOS_SAM.dsk PlayIF.pdf readme.txt licenses.txt DOS Agon Next
 
         # optional release documents, skipped if the author removed them
         if [ -f Releases/walkthrough.txt ] ; then
@@ -43,6 +43,20 @@ while getopts ':t:h' opt; do
             cp Releases/invisiclues.txt .
             zip ${STORY}_${RELEASE}.zip invisiclues.txt
             rm invisiclues.txt
+        fi
+
+        # Apple II (default CP/M two-disk set, single-disk hack, or two-disk z5 hack with .nib)
+        if [ -f ${STORY}_apple2.dsk ] ; then
+            zip ${STORY}_${RELEASE}.zip ${STORY}_apple2.dsk
+        fi
+        if [ -f ${STORY}_apple2_s1.dsk ] ; then
+            zip ${STORY}_${RELEASE}.zip ${STORY}_apple2_s1.dsk
+        fi
+        if [ -f ${STORY}_apple2_s2.dsk ] ; then
+            zip ${STORY}_${RELEASE}.zip ${STORY}_apple2_s2.dsk
+        fi
+        if [ -f ${STORY}_apple2_s2.nib ] ; then
+            zip ${STORY}_${RELEASE}.zip ${STORY}_apple2_s2.nib
         fi
 
         # TRS-80 CoCo and Dragon 64 (z3 and z5)
