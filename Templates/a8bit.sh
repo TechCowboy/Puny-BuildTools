@@ -14,9 +14,9 @@ if ! [ -f ${STORY}.z${ZVERSION} ] ; then
     exit 1;
 fi 
 
-#cleanup 
-if [ -f ${STORY}_a8bit.dsk ] ; then
-    rm ${STORY}_a8bit.dsk
+#cleanup
+if [ -f ${STORY}_atari8bit.atr ] ; then
+    rm ${STORY}_atari8bit.atr
 fi
 
 suffix=_atari8bit
