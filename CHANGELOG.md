@@ -19,7 +19,6 @@
 * some of the VEZZA binaries have been updated to the latest version 
 * updated miscancellous existing build templates 
 * updated installation instructions, documentation and pixel guide
-* updated bundle.sh utility to reflect latest structural changes
 * added support to include walkthrough.txt and invisiclues.txt files
 * bundle.sh now adds every artifact conditionally, so a customized all.sh that builds only a subset of targets bundles cleanly without 'file not found' warnings (bundle.sh 2.4)
 
