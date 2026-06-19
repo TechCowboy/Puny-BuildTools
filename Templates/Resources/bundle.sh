@@ -29,9 +29,10 @@ while getopts ':t:h' opt; do
         if [ -f ${STORY}_amiga.adf ] ; then
             zip ${STORY}_${RELEASE}.zip ${STORY}_amiga.adf
         fi
-        if [ -f ${STORY}_atari8bit.atr ] ; then
-            zip ${STORY}_${RELEASE}.zip ${STORY}_atari8bit.atr
-        fi
+        # Atari 8-bit: z3 single ED disk, or z5 Varuna DD + SD (SD spans across disks if large)
+        for disk in ${STORY}_atari8bit*.atr ; do
+            [ -f "$disk" ] && zip ${STORY}_${RELEASE}.zip "$disk"
+        done
         if [ -f ${STORY}_atarist.st ] ; then
             zip ${STORY}_${RELEASE}.zip ${STORY}_atarist.st
         fi

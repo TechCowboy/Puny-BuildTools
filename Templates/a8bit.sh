@@ -39,17 +39,48 @@ zmachine3()
 
 zmachine5()
 {
-    a8bin=~/FictionTools/atari8bit/new8_40_dd_z5.bin # Jindroush's terp, 180kb disk image, 40 columns
-    printf "Interpreter: Jindroush/Infocom version H [XZIP]\n"
+    # Varuna - clean-room XZIP (z5) interpreter, demand-paged, runs on a stock
+    # 64K XL/XE (a 130XE's/Rambo's extra RAM becomes extra page cache if present).
+    # Replaces the Jindroush 128K hack. One story -> two formats, both built by
+    # the Varuna disk builder (mkatr.py):
+    #   DD 180K - a single disk for FujiNet / SIO2SD / emulators (no swaps).
+    #   SD 90K  - every real Atari drive (810/1050/XF551); spanned across disks
+    #             with the Atari split marker set when terp+story exceed 90K.
+    # The DD build is rejected by the builder if the story would not fit one disk.
+    vdir=~/FictionTools/atari8bit         # where the Varuna artifacts are dropped
+    boot=$vdir/boot.bin                   # stage-1 boot loader
+    bootlab=$vdir/boot.lab
+    terp=$vdir/varuna.bin                 # the interpreter
+    terplab=$vdir/varuna.lab
+    ddout=${STORY}${suffix}_dd.atr
+    sdout=${STORY}${suffix}_sd.atr        # spanned -> ${STORY}${suffix}_sd.d1.atr, ...
+
+    printf "Interpreter: Varuna [XZIP], clean-room, demand-paged\n"
     printf "Columns: 40\n"
-    printf "Memory: min. 128kb of extended memory\n"
-    printf "Disk: Single-Sided, Double-Density, 180kb capacity\n"
-    printf "Disk Drive: 1050 and XF551\n\n"
-    printf "Disk image built. Boot with BASIC disabled.\n"
-    cat $a8bin ${STORY}.z5 > ${STORY}${suffix}.atr 2>/dev/null
-    size=`ls -l ${STORY}${suffix}.atr | cut -d' ' -f5`
-    head --bytes $((183952-$size)) /dev/zero >> ${STORY}${suffix}.atr
-    printf "\n" #just for cosmetical reasons
+    printf "Memory: min. 64kb (130XE/Rambo extended RAM used as cache if present)\n"
+    printf "Disk: DD 180kb single + SD 90kb (spans across disks if needed)\n"
+    printf "Compatibility: DD - XF551, FujiNet/SIO2SD\n"
+    printf "               SD - every Atari drive (810/1050/XF551)\n\n"
+
+    # clean any prior z5 output for this story (DD, single SD, spanned SD)
+    rm -f ${ddout} ${sdout} ${STORY}${suffix}_sd.d*.atr
+
+    # DD 180K single image (mkatr.py is assumed on PATH)
+    if ! mkatr.py --bootable --stage1 "$boot" --stage1-lab "$bootlab" \
+            --terp "$terp" --terp-lab "$terplab" --story ${STORY}.z5 \
+            --out ${ddout} --density dd ; then
+        printf "\nNote: DD 180kb image not built (story too large for one disk).\n"
+    fi
+
+    # SD 90K image(s): single disk, or spanned with the split marker set
+    if ! mkatr.py --bootable --stage1 "$boot" --stage1-lab "$bootlab" \
+            --terp "$terp" --terp-lab "$terplab" --story ${STORY}.z5 \
+            --out ${sdout} --density sd ; then
+        printf "\nSD build failed. Operation aborted.\n"
+        exit 1
+    fi
+
+    printf "\nDisk images built. Boot with BASIC disabled.\n\n"
     exit 0
 }
 

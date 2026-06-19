@@ -7,6 +7,8 @@
 * TRS CoCo and Dragon 64 promoted from deprecated to full targets, now supporting Z-machine version 5 (via Ceres) in addition to version 3
 * split the combined trs_coco_dragon64 builder into separate trs_coco and dragon64 targets
 * added mkdsk.py, a dependency-free Python disk image builder for the Ceres targets
+* added Varuna, a clean-room Z-machine version 5 (XZIP) interpreter (6502 assembly) for the Atari 8-bit XL/XE, replacing the Jindroush 128K hack: it runs on a stock 64K machine, uses demand-paged virtual memory for stories larger than RAM, and supports international/accented characters and save/restore (extra RAM on a 130XE or Rambo board is used as page cache when present)
+* added mkatr.py, a dependency-free Python Atari 8-bit disk builder for the Varuna target, producing a single DD 180K image (FujiNet/SIO2SD/emulation) and SD 90K images for every Atari drive, automatically spanning SD across multiple disks for large stories
 * Agon Light is now a build target, includes the whole family e.g. Console8
 * Commander X16 is now a build target
 * ZX Spectrum Next is now a build target (prior only supported through bare z-file)
