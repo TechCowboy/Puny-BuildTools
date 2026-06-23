@@ -106,7 +106,6 @@ do
             find . -name "*.out*" -exec chmod 0644 {} \;
             find . -name "*.inc" -exec chmod 0644 {} \;
             find . -name "*.yaml" -exec chmod 0644 {} \;
-            find . -name "*.transcript" -exec chmod 0644 {} \;
             find . -name "*.yml" -exec chmod 0644 {} \;
             find . -name "*.man" -exec chmod 0644 {} \;
             find . -name "*.html" -exec chmod 0644 {} \;
