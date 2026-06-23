@@ -4,10 +4,10 @@
 puny CLI will disk images with a loading screen when it finds a file in the right format and named as seen below in this directory (Resources).
 
 # C64            |      # ZX Spectrum      |      # Commodore Amiga
-loadpic.kla      |      SCRLOAD.COM        |      loader
+loadpic.kla      |      SCRLOAD.COM        |      screen16.iff
 -------------------------------------------------------------------------
 # Atari ST       |      # MSX              |      # BBC / Acorn Electron
-ART.PI1          |      LPIC.SC2           |      screen.bbc
+screen.pi1       |      LPIC.SC2           |      screen.bbc
 -------------------------------------------------------------------------
 # Amstrad CPC    |      # Plus/4           |	  # MS-DOS
 SCREEN.SCR       |      picplus4.mb        |	  SCREEN.PNG
@@ -28,7 +28,7 @@ Plus/4      -> Botticelli multicolor image,up to 121 colors. Paint the screen in
 MSX         -> MSX mode2 image, 16 colors. Paint the screen in
 Multipaint and save it directly as .SC2 file.
 ------------------------------------------------------------------------- 
-Atari ST    -> Degas PI1 image, 16 colors from a self-defined palette. Paint the screen in Multipaint but save it as a .PNG file. Now use degaspi1.sh to convert your .PNG image to .PI1. This works around some issues regarding compatibility with .PI1 files saved from Multipaint.
+Atari ST    -> Degas PI1 image, 16 colors from a self-defined palette. Paint the screen in Multipaint but save it as a .PNG file. Now use degaspi1.sh to convert your .PNG image to screen.pi1 (this also works around compatibility issues with .PI1 files saved directly from Multipaint). Place screen.pi1 in Resources. You only supply this one colour image: the Atari ST disk builder automatically derives a monochrome .PI3 version from it (pixel-doubled, Bayer-dithered), so the artwork also shows on a monochrome ST monitor.
 ------------------------------------------------------------------------- 
 BBC/Elk     -> BBC screen, 8 colors. Use BBC Micro Image Converter. Open an image in one of the many supported formats, like .PNG for example, then save it as BBC screen. You get the best results when importing a screen with a reduced palette and chunky pixels. 
 ------------------------------------------------------------------------- 
@@ -36,7 +36,7 @@ MS-DOS      -> PNG image (320x200, 256 colors), use any image editor.
 -------------------------------------------------------------------------
 ZX Spectrum -> Spectrum SCR converted into a CPM+ .COM format. Create it as follows. Paint your screen using Multipaint. Save SCR as TAPE. Load .TAP file in FUSE. Create a raw screen binary file, called "screen.bin" by using the export display buffer option in FUSE, starts at 0x4000 and has a length 0x1B00. Copy "screen.bin" to ~/FictionTools/scrload directory. In scrload dir, execute ./makescr.sh and SCRLOAD.COM will be the output.
 -------------------------------------------------------------------------
-Amiga       -> .IFF image with 320x256 resolution and 32 colors. This format is recommended as it is compatible with both OCS and ECS Amigas. Paint your screen in Multipaint, then save it as .PNG file. Now use the ifftool.sh to convert the .PNG image to an Amiga loader executable. 
+Amiga       -> .IFF image, 16 colors, 320x200 (320x200 renders correctly on both PAL and NTSC machines). Paint your screen in Multipaint, save it as a .PNG file, then use ifftool.sh with the -l option to convert it to screen16.iff. Place screen16.iff in Resources. Eris shows the screen itself, no separate loader is needed. This is the same screen16.iff the MEGA65 target uses, so one file can serve both.
 -------------------------------------------------------------------------
 Amstrad CPC -> Amstrad CPC Mode 0 screen. Paint the screen in Multipaint and then save it as .PNG file. Now use the cpcscr.sh utility and convert the .PNG image to a CPC screen, a CPC palette file and a BASIC loader.           
 -------------------------------------------------------------------------

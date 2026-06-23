@@ -92,7 +92,6 @@ Kenobi guides you through the whole setup, asking for confirmation before any st
 - install all required dependencies
 - detect your host system (native `Linux`, `MacOS` via OrbStack or `Windows / WSL2`) and configure your shell environment accordingly
 - teach `cpmtools` to handle disk images for SAM Coupe and DEC Rainbow
-- install the `amitools` required for the Amiga target
 - ask for the path to your PunyInform library
 - verify that all components have the right permissions
 
@@ -115,7 +114,7 @@ You don't need any of this if you used `./kenobi -i`. It's documented here only 
 Install the dependencies:
 
 ```
-sudo apt update && sudo apt install frotz cpmtools dosfstools mtools git ruby imagemagick zip python3-pip libsdl1.2debian libsdl2-2.0-0 python-is-python3 libgl1
+sudo apt update && sudo apt install frotz cpmtools dosfstools mtools git ruby imagemagick zip libsdl1.2debian libsdl2-2.0-0 python-is-python3 libgl1
 ```
 
 Add the matching entry to your `~/.bashrc`. On `Linux`:
@@ -163,12 +162,6 @@ end
   boottrk 2
   os 2.2
 end
-```
-
-Install the `amitools` required for the Amiga target:
-
-```
-pip3 install cython --break-system-packages && pip3 install -U git+https://github.com/cnvogelg/machine68k.git --break-system-packages && pip3 install -U "amitools[vamos] @ git+https://github.com/cnvogelg/amitools.git" --break-system-packages
 ```
 
 Finally, provide the path to your PunyInform `lib` directory by editing the `lib=` line in `~/FictionTools/.pi6rc`:
@@ -374,7 +367,7 @@ Type `kenobi -h` for the help menu.
 
 ### ifftool.sh
 
-ifftool.sh is a Commodore Amiga/MEGA65 IFF screen maker. It converts .PNG files to .IFF images in Amiga and MEGA65 resolutions. It also compiles .PNG images to executable Amiga binaries, the format used by the Puny CLI 'amiga' target to build disks with loading screen.
+ifftool.sh is a MEGA65/Amiga IFF screen maker. It converts .PNG files to `.IFF` loading screens. The 16 color `screen16.iff` it produces is shared by both the MEGA65 and the Amiga targets, so a single image can serve both.
 
 Type `ifftool.sh -h` for the help menu.
 
@@ -439,6 +432,12 @@ mkdsk.py -o save.vdk --dragon --blank
 ### Ceres on CoCo and Dragon 64
 
 When targeting Z-machine version 5, the TRS-80 Color Computer 1/2 and the Dragon 64 are powered by `Ceres`, a clean-room Z-machine version 5 interpreter. On the Dragon 64, the version 5 disk is a single self-booting image: the player just inserts it and types `BOOT`. On the CoCo, the version 5 disk boots with `RUN"CERES"`. Both targets still support Z-machine version 3 as well. Their disk images are built with the bundled `mkdsk.py`, a self-contained Python utility that needs no further dependencies.
+
+### Eris on the Amiga and Atari ST
+
+When targeting Z-machine version 5, the Commodore Amiga and the Atari ST are powered by `Eris`, a clean-room Z-machine version 5 interpreter sharing one core across both machines. It runs on a stock Amiga (A500, Kickstart 1.3) and a stock Atari ST (520STF), needs no Workbench or hard disk, and supports international/accented characters and the full range of Z-machine text styles, with save and restore to a separate save disk. The disks are self-booting and built from scratch by the bundled Python tools `adf.py` (Amiga) and `gemdos.py` (Atari ST), with no further dependencies. The Z-machine version 3 path still wraps Infocom's own Amiga and Atari ST interpreters.
+
+On the Atari ST, when you supply a colour loading screen (`Resources/screen.pi1`), the builder automatically derives a monochrome version too, so the artwork shows on both colour and monochrome monitors. On the Amiga the loading screen (`Resources/screen16.iff`) is the same format the MEGA65 target uses, so a single screen can serve both.
 
 ## Deprecated targets
 

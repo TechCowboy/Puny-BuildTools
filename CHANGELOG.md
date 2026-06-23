@@ -9,6 +9,13 @@
 * added mkdsk.py, a dependency-free Python disk image builder for the Ceres targets
 * added Varuna, a clean-room Z-machine version 5 (XZIP) interpreter (6502 assembly) for the Atari 8-bit XL/XE, replacing the Jindroush 128K hack: it runs on a stock 64K machine, uses demand-paged virtual memory for stories larger than RAM, and supports international/accented characters and save/restore (extra RAM on a 130XE or Rambo board is used as page cache when present)
 * added mkatr.py, a dependency-free Python Atari 8-bit disk builder for the Varuna target, producing a single DD 180K image (FujiNet/SIO2SD/emulation) and SD 90K images for every Atari drive, automatically spanning SD across multiple disks for large stories
+* added Eris, a clean-room Z-machine version 5 interpreter (one shared core) for the Commodore Amiga (stock A500, Kickstart 1.3) and the Atari ST (stock 520STF), replacing the old template-based Amiga/ST path; the disks are self-booting and need no Workbench or hard disk, and Eris supports international/accented characters and the full range of Z-machine text styles, with save/restore to a separate disk; the Z-machine version 3 path still wraps Infocom's own Amiga and Atari ST interpreters
+* added from-scratch Python disk builders for the Amiga (adf.py, an 880K AmigaDOS ADF) and the Atari ST (gemdos.py, a 720K GEMDOS/FAT12 disk), stdlib-only and building bootable disks with no external tools
+* Atari ST loading screens: supply one colour DEGAS .pi1 and the builder automatically derives a monochrome .pi3 version (pixel-doubled, Bayer-dithered), so the artwork displays on both colour and monochrome ST monitors
+* the Amiga and MEGA65 targets can now share the same screen16.iff loading-screen resource
+* ifftool.sh: Amiga/MEGA65 IFF screens are now 320x200 (compatible with both PAL and NTSC; the old 320x256 was PAL-only), and the obsolete Amiga loader-executable feature has been removed (ifftool.sh 1.3)
+* dropped the amitools/vamos dependency: the Amiga and Atari ST disks are now built natively in Python, no GitHub pip install required
+* removed zip2st (the old Atari ST disk builder) and dropped python3-pip from the dependencies, nothing in the BuildTools needs pip anymore
 * Agon Light is now a build target, includes the whole family e.g. Console8
 * Commander X16 is now a build target
 * ZX Spectrum Next is now a build target (prior only supported through bare z-file)

@@ -3,7 +3,7 @@
 # Puny BuildTools, (c) 2024 Stefan Vogt
 # NOTE: Requires ImageMagick at path
 
-echo "degaspi1.sh - Atari ST (Degas .PI1) screen maker"
+echo "degaspi1.sh 1.1 - Atari ST (Degas .PI1) screen maker"
 echo -e "Puny BuildTools, (c) 2024 Stefan Vogt\n"
 
 while getopts ':c:h' opts
@@ -15,7 +15,7 @@ do
                 exit 1
             fi
             convert ${OPTARG} -resize 320x200\! -colors 16 -depth 4 degasscr.ppm
-            ppmtopi1 degasscr.ppm >ART.PI1
+            ppmtopi1 degasscr.ppm >screen.pi1
             rm degasscr.ppm
             echo
             exit 0
@@ -24,7 +24,7 @@ do
         h) 
             echo "Converts .PNG images to Atari ST / Degas .PI1 format." 
             echo -e "Usage: [degaspi1.sh -c image.png] -> 16 color .PI1 320x200"
-            echo -e "output will be 'ART.PI1'\n"
+            echo -e "output will be 'screen.pi1'\n"
             ;;
 
         :)

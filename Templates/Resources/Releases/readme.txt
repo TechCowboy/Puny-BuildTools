@@ -44,11 +44,10 @@ Press RETURN for system wboot
 Type VEZZA B:STORY.DAT
 
 Atari ST:
-Insert the game disk and open it
-To watch the artwork launch ARTVIEW.APP and select ART.PI1
-To launch the game set the machine to medium resolution
-Double click on PLAY.PRG in the disk directory
-This version of the game supports the UNDO command
+Insert the game disk and switch on the machine
+It is self-booting: if a loading screen is included it is shown first, then the
+game starts automatically (no desktop, no double-clicking, no GEMDOS to load)
+The game runs on both monochrome and colour monitors
 
 Agon Light/Console8:
 Copy the contents of the Agon directory to your hard drive in to a new directory

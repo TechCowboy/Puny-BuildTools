@@ -163,10 +163,10 @@ do
             # --- 1. dependencies ------------------------------------------------
             echo -e "The following packages will be installed via apt:\n"
             echo -e "   frotz cpmtools dosfstools mtools git ruby imagemagick zip"
-            echo -e "   python3-pip libsdl1.2debian libsdl2-2.0-0 python-is-python3 libgl1\n"
+            echo -e "   libsdl1.2debian libsdl2-2.0-0 python-is-python3 libgl1\n"
             read -r -p "Install these dependencies now? [y/N] " reply
             if [[ "$reply" =~ ^[Yy]$ ]]; then
-                sudo apt update && sudo apt install -y frotz cpmtools dosfstools mtools git ruby imagemagick zip python3-pip libsdl1.2debian libsdl2-2.0-0 python-is-python3 libgl1
+                sudo apt update && sudo apt install -y frotz cpmtools dosfstools mtools git ruby imagemagick zip libsdl1.2debian libsdl2-2.0-0 python-is-python3 libgl1
                 if [ $? -ne 0 ]; then
                     echo -e "\nerror: the dependencies could not be installed. Aborting program.\n"
                     exit 1
@@ -244,21 +244,7 @@ EOF
                 fi
             fi
 
-            # --- 4. amitools (Amiga target) ------------------------------------
-            echo -e "\ninstalling amitools for the Amiga target [...]\n"
-            read -r -p "Install amitools now? This pulls from GitHub and may take a while. [y/N] " reply
-            if [[ "$reply" =~ ^[Yy]$ ]]; then
-                pip3 install cython --break-system-packages && pip3 install -U git+https://github.com/cnvogelg/machine68k.git --break-system-packages && pip3 install -U "amitools[vamos] @ git+https://github.com/cnvogelg/amitools.git" --break-system-packages
-                if [ $? -ne 0 ]; then
-                    echo -e "\nerror: amitools could not be installed. Aborting program.\n"
-                    exit 1
-                fi
-            else
-                echo -e "\namitools is required for the Amiga target. Aborting program.\n"
-                exit 1
-            fi
-
-            # --- 5. PunyInform path (.pi6rc) -----------------------------------
+            # --- 4. PunyInform path (.pi6rc) -----------------------------------
             echo -e "\nconfiguring the path to your PunyInform library [...]\n"
             pi6rc="$HOME/FictionTools/.pi6rc"
             current="$(grep -E '^lib=' "$pi6rc" 2>/dev/null | head -1 | cut -d'=' -f2-)"
@@ -288,7 +274,7 @@ EOF
                 echo "-> keeping existing PunyInform path"
             fi
 
-            # --- 6. permission self-check --------------------------------------
+            # --- 5. permission self-check --------------------------------------
             echo -e "\nverifying component permissions [...]\n"
             permIssues=0
             for f in puny pi6 Templates/Resources/bundle.sh ifftool.sh cpcscr.sh \
