@@ -1,0 +1,4 @@
+This package has been created using the Puny BuildTools, a PunyInform command line interface and retro disk image factory for Infocom Z-machine games. https://github.com/ByteProject/Puny-BuildTools
+
+ZX Spectrum Next Z-machine loader and screen viewer by Leonis Silver. https://leonisx.itch.io/z-machine-loader
+
