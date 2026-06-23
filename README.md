@@ -439,6 +439,22 @@ When targeting Z-machine version 5, the Commodore Amiga and the Atari ST are pow
 
 On the Atari ST, when you supply a colour loading screen (`Resources/screen.pi1`), the builder automatically derives a monochrome version too, so the artwork shows on both colour and monochrome monitors. On the Amiga the loading screen (`Resources/screen16.iff`) is the same format the MEGA65 target uses, so a single screen can serve both.
 
+### Save disks for the Amiga and Atari ST
+
+Eris keeps saved games on a separate disk, never on the game disk, and the two machines need different kinds of save disk.
+
+On the Atari ST, saves are ordinary GEMDOS files, so the save disk must be a formatted FAT12 volume. `gemdos.py` builds a blank one for you when you pass `--out` without a story or interpreter:
+
+```
+gemdos.py --boot ~/FictionTools/Templates/Interpreters/st_boot.bin --out save.st
+```
+
+On the Amiga, Eris boots without AmigaDOS and uses its own raw disk layout, so the save disk needs no filesystem at all. Any blank 880K image works and Eris formats it on the first save:
+
+```
+python3 -c "open('save.adf','wb').write(bytes(901120))"
+```
+
 ## Deprecated targets
 
 Some of the build targets are deprecated and flagged as such in Puny CLI. I've tried to document the reasons why below. Note that the issues listed per system are not considered complete and you may encounter even more issues. You can force building deprecated targets either one-by-one using Puny CLI or using the `-d` flag when running the `all.sh` script in your project dir like this `./all.sh -d`.
