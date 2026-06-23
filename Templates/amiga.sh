@@ -1,69 +1,82 @@
 #!/bin/bash
 # amiga.sh - Commodore Amiga disk builder
-# Puny BuildTools, (c) 2024 Stefan Vogt
+# Puny BuildTools, (c) 2026 Stefan Vogt
+#
+# Builds a self-booting Amiga disk (.adf) for the configured story:
+#   z5 / z8 -> Eris, our own resident interpreter (self-booting, no Workbench)
+#   z3      -> Infocom's own Amiga interpreter on a bootable AmigaDOS disk
+# Disk images are built from scratch by adf.py (stdlib Python, on PATH) - no
+# templates, no amitools/vamos. An optional loading screen is taken from
+# Resources/screen16.iff (IFF ILBM). On a z5/z8 disk Eris shows the screen
+# itself; on a z3 disk the 'display' viewer shows it.
 
-#read config file 
+#read config file
 source config.sh
 
-echo -e "\namiga.sh 2.0 - Commodore Amiga disk builder"
-echo -e "Puny BuildTools, (c) 2024 Stefan Vogt\n"
+echo -e "\namiga.sh 4.0 - Commodore Amiga disk builder"
+echo -e "Puny BuildTools, (c) 2026 Stefan Vogt\n"
+
+# Eris binaries (interpreter, bootblock, viewer, Infocom terp) live here. Override
+# INTERP only for local testing; the default is the established BuildTools path.
+INTERP=${INTERP:-~/FictionTools/Templates/Interpreters}
+SCREEN=Resources/screen16.iff
 
 #story check / arrangement
 if ! [ -f ${STORY}.z${ZVERSION} ] ; then
     echo -e "Story file '${STORY}.z${ZVERSION}' not found. Operation aborted.\n"
     exit 1
-fi 
+fi
 
-#cleanup 
+#cleanup
 if [ -f ${STORY}_amiga.adf ] ; then
     rm ${STORY}_amiga.adf
 fi
 
-# set loading screen flag true or false
-if [ -f Resources/loader ] ; then
+# z-machine version -> interpreter: z3 = Infocom, z5/z8 = Eris
+case ${ZVERSION} in
+    3)   mode=infocom ;;
+    5|8) mode=eris ;;
+    *)   echo -e "Unsupported Z-version '${ZVERSION}'. Eris builds z5/z8; z3 via Infocom.\n"
+         exit 1 ;;
+esac
+
+# loading screen present?
+if [ -f ${SCREEN} ] ; then
     buildWithLoader=true
 else
     buildWithLoader=false
 fi
 
-#prepare story 
-cp ${STORY}.z${ZVERSION} Story.Data
-
-# copy disk image template and loader
-zvalue="$ZVERSION"
-if [[ $zvalue == 5 && $buildWithLoader == true ]] ; then
-    echo "Configuring Z5 .ADF template with loader."
-    cp ~/FictionTools/Templates/Interpreters/amiga_Infocom_z5_pic.adf ./
-    mv amiga_Infocom_z5_pic.adf ${STORY}_amiga.adf
-    cp Resources/loader ./
-elif [[ $zvalue == 5 && $buildWithLoader == false ]] ; then
-    echo "Configuring Z5 .ADF template without loader."
-    cp ~/FictionTools/Templates/Interpreters/amiga_Infocom_z5.adf ./
-    mv amiga_Infocom_z5.adf ${STORY}_amiga.adf
-elif [[ $zvalue == 3 && $buildWithLoader == true ]] ; then
-    echo "Configuring Z3 .ADF template with loader."
-    cp ~/FictionTools/Templates/Interpreters/amiga_ZIP_pic.adf ./
-    mv amiga_ZIP_pic.adf ${STORY}_amiga.adf
-    cp Resources/loader ./
-elif [[ $zvalue == 3 && $buildWithLoader == false ]] ; then
-    echo "Configuring Z3 .ADF template without loader."
-    cp ~/FictionTools/Templates/Interpreters/amiga_ZIP.adf ./
-    mv amiga_ZIP.adf ${STORY}_amiga.adf
-fi
-
-#add files to Amiga diks image
-if [ -f loader ]; then
-    xdftool ${STORY}_amiga.adf write loader
-fi
-xdftool ${STORY}_amiga.adf write Story.Data
-
-#post-notification and cleanup
-if ! [ -f loader ] ; then
-    echo -e "\nNo 'loader' found in /Resources dir."
-    echo -e "Commodore Amiga disk without loading screen successfully built.\n"
+#build the disk image
+if [ ${mode} = infocom ] ; then
+    if ${buildWithLoader} ; then
+        echo "Configuring Z3 Infocom disk with loading screen."
+        adf.py --infocom "${INTERP}/amigaz3" --story ${STORY}.z${ZVERSION} \
+            --screen ${SCREEN} --loader "${INTERP}/display" \
+            --out ${STORY}_amiga.adf
+    else
+        echo "Configuring Z3 Infocom disk."
+        adf.py --infocom "${INTERP}/amigaz3" --story ${STORY}.z${ZVERSION} \
+            --out ${STORY}_amiga.adf
+    fi
 else
-    rm loader
-    echo -e "\n'loader' found in /Resources dir."
-    echo -e "Commodore Amiga disk with loading screen successfully built.\n"
+    if ${buildWithLoader} ; then
+        echo "Configuring Z${ZVERSION} Eris disk with loading screen."
+        adf.py --boot "${INTERP}/amiga_boot.bin" --interp "${INTERP}/eris_interp.bin" \
+            --story ${STORY}.z${ZVERSION} --screen ${SCREEN} \
+            --out ${STORY}_amiga.adf
+    else
+        echo "Configuring Z${ZVERSION} Eris disk."
+        adf.py --boot "${INTERP}/amiga_boot.bin" --interp "${INTERP}/eris_interp.bin" \
+            --story ${STORY}.z${ZVERSION} --out ${STORY}_amiga.adf
+    fi
 fi
-rm Story.Data
+
+#post-notification
+if ${buildWithLoader} ; then
+    echo -e "\n'${SCREEN}' found in Resources."
+    echo -e "Commodore Amiga disk with loading screen successfully built: ${STORY}_amiga.adf\n"
+else
+    echo -e "\nNo 'screen16.iff' in Resources."
+    echo -e "Commodore Amiga disk without loading screen successfully built: ${STORY}_amiga.adf\n"
+fi
