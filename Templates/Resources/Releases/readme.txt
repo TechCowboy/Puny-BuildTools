@@ -19,7 +19,8 @@ Now type PLAY GAME
 You have to press a key to dismiss the intro screen
 
 Spectrum Next:
-Your Spectrum Next has Z-machine support built-in. Just put the .z5 file on the SD card and load it from the Next file browser
+Copy the contents of the Next directory to your Spectrum Next
+Run loader.bas from NextBASIC to start the game
 
 Amstrad PCW: 
 Insert the game disc 
@@ -45,8 +46,9 @@ Type VEZZA B:STORY.DAT
 
 Atari ST:
 Insert the game disk and switch on the machine
-It is self-booting: if a loading screen is included it is shown first, then the
-game starts automatically (no desktop, no double-clicking, no GEMDOS to load)
+It is self-booting, with no desktop, no double-clicking and no GEMDOS to load
+If a loading screen is included it is shown first
+You have to press a key to dismiss the loading screen
 The game runs on both monochrome and colour monitors
 
 Agon Light/Console8:
@@ -84,6 +86,10 @@ Mega65:
 Insert the game disk
 Type BOOT 
 
+Commander X16:
+Extract the archive and copy its contents to your machine
+Type LOAD"<gamename>.PRG",8 then RUN to start the game
+
 MSX 1 / MSX 2:
 Insert the game disk
 The game will boot automatically
@@ -116,6 +122,16 @@ The game will auto-boot
 
 In case your computer was already turned on, you need to reset
 
+TRS-80 Color Computer:
+Insert the game disk
+Type RUN"CERES" and the game will load
+Requires a 64K Color Computer 1 or 2
+
+Dragon 64:
+Insert the game disk
+Type BOOT and the game will load (the disk is self-booting)
+Requires a Dragon 64, a Dragon 32 will not work
+
 Classic Macintosh:
 Insert game disk
 Double click on the Moonmist Ent. disk image
@@ -130,4 +146,4 @@ Modern PC:
 Just launch your Z-Machine interpreter of choice and open the .Z file
 
 CREDITS
-Disk image creation / bundling of this game: Puny BuildTools 2.0 by Stefan Vogt https://github.com/ByteProject/Puny-BuildTools
+Disk image creation / bundling of this game: Puny BuildTools 3.0 by Stefan Vogt https://github.com/ByteProject/Puny-BuildTools
