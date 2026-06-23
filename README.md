@@ -433,6 +433,10 @@ mkdsk.py -o save.vdk --dragon --blank
 
 When targeting Z-machine version 5, the TRS-80 Color Computer 1/2 and the Dragon 64 are powered by `Ceres`, a clean-room Z-machine version 5 interpreter. On the Dragon 64, the version 5 disk is a single self-booting image: the player just inserts it and types `BOOT`. On the CoCo, the version 5 disk boots with `RUN"CERES"`. Both targets still support Z-machine version 3 as well. Their disk images are built with the bundled `mkdsk.py`, a self-contained Python utility that needs no further dependencies.
 
+### Varuna on the Atari 8-bit
+
+When targeting Z-machine version 5, the Atari 8-bit XL/XE is powered by `Varuna`, a clean-room Z-machine version 5 interpreter that runs on a stock 64K machine (the older interpreter needed 128K). It uses demand-paged virtual memory so a story can be far larger than RAM, supports international/accented characters, and saves and restores to a separate disk. Extra RAM on a 130XE or Rambo board is used as additional page cache when present. Disk images are built by the bundled `mkatr.py`: a single DD 180K image for FujiNet/SIO2SD/emulation, plus SD 90K images for every Atari drive, automatically spanned across multiple disks when a story is too large for one.
+
 ### Eris on the Amiga and Atari ST
 
 When targeting Z-machine version 5, the Commodore Amiga and the Atari ST are powered by `Eris`, a clean-room Z-machine version 5 interpreter sharing one core across both machines. It runs on a stock Amiga (A500, Kickstart 1.3) and a stock Atari ST (520STF), needs no Workbench or hard disk, and supports international/accented characters and the full range of Z-machine text styles, with save and restore to a separate save disk. The disks are self-booting and built from scratch by the bundled Python tools `adf.py` (Amiga) and `gemdos.py` (Atari ST), with no further dependencies. The Z-machine version 3 path still wraps Infocom's own Amiga and Atari ST interpreters.
