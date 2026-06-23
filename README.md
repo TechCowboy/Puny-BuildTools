@@ -435,7 +435,7 @@ When targeting Z-machine version 5, the TRS-80 Color Computer 1/2 and the Dragon
 
 ### Varuna on the Atari 8-bit
 
-When targeting Z-machine version 5, the Atari 8-bit XL/XE is powered by `Varuna`, a clean-room Z-machine version 5 interpreter that runs on a stock 64K machine (the older interpreter needed 128K). It uses demand-paged virtual memory so a story can be far larger than RAM, supports international/accented characters, and saves and restores to a separate disk. Extra RAM on a 130XE or Rambo board is used as additional page cache when present. Disk images are built by the bundled `mkatr.py`: a single DD 180K image for FujiNet/SIO2SD/emulation, plus SD 90K images for every Atari drive, automatically spanned across multiple disks when a story is too large for one.
+When targeting Z-machine version 5, the Atari 8-bit XL/XE is powered by `Varuna`, a clean-room Z-machine version 5 interpreter that runs on a stock 64K machine (the older interpreter needed 128K). It uses demand-paged virtual memory so a story can be far larger than RAM, supports international/accented characters, and saves and restores to a separate disk. Extra RAM on a 130XE or Rambo board is used as additional page cache when present. Disk images are built by the bundled `mkatr.py`: a single DD 180K image for the XF551 drive (and FujiNet/SIO2SD), plus SD 90K images for every Atari drive (810/1050/XF551), automatically spanned across multiple disks when a story is too large for one.
 
 ### Eris on the Amiga and Atari ST
 
