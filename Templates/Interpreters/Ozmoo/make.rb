@@ -31,7 +31,7 @@ else
 		'XPLUS4' => "xplus4 -autostart-delay-random",
 		'MEGA65' => "xemu-xmega65 -besure",
 		'C1541' => "c1541",
-		'EXOMIZER' => __dir__ + "/exomizer/src/exomizer",
+		'EXOMIZER' => "exomizer",
 		'ACME' => "acme",
 		'ZIP' => "zip -r",
 	}
