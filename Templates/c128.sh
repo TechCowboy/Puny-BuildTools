@@ -23,7 +23,7 @@ if [ -f ${STORY}_c128.d64 ] ; then
 fi
 
 #compile
-ruby ~/FictionTools/Templates/Interpreters/Ozmoo/make.rb -t:c128 -dc:2:9 -ss1:"${LABEL}" -ss2:"Interactive Fiction" -ss3:"${SUBTITLE}" -sw:6 -dm:0 ${STORY}.z${ZVERSION}
+ruby ~/FictionTools/Templates/Interpreters/Ozmoo/make.rb -t:c128 -bgcol:black -fgcol:white -ss1:"${LABEL}" -ss2:"Interactive Fiction" -ss3:"${SUBTITLE}" -sw:6 -dm:0 ${STORY}.z${ZVERSION}
 
 mv c128_${STORY}.d71 ${STORY}_c128.d71
 

@@ -28,7 +28,7 @@ else
 fi
 
 #compile
-ruby ~/FictionTools/Templates/Interpreters/Ozmoo/make.rb -t:plus4 ${LOADSCRFLAG}-dc:2:9 -ss1:"${LABEL}" -ss2:"Interactive Fiction" -ss3:"${SUBTITLE}" -sw:6 -dm:0 ${STORY}.z${ZVERSION}
+ruby ~/FictionTools/Templates/Interpreters/Ozmoo/make.rb -t:plus4 ${LOADSCRFLAG}-bgcol:black -fgcol:white -ss1:"${LABEL}" -ss2:"Interactive Fiction" -ss3:"${SUBTITLE}" -sw:6 -dm:0 ${STORY}.z${ZVERSION}
 
 mv plus4_${STORY}.d64 ${STORY}_plus4.d64
 
