@@ -1,12 +1,12 @@
 #!/bin/bash
 # plus4.sh - Plus/4 disk builder
-# Puny BuildTools, (c) 2024 Stefan Vogt
+# Puny BuildTools, (c) 2026 Stefan Vogt
 
 #read config file 
 source config.sh
 
-echo -e "\nplus4.sh 2.1 - Plus/4 disk builder"
-echo -e "Puny BuildTools, (c) 2024 Stefan Vogt\n"
+echo -e "\nplus4.sh 2.2 - Plus/4 disk builder"
+echo -e "Puny BuildTools, (c) 2026 Stefan Vogt\n"
 
 #story check / arrangement
 if ! [ -f ${STORY}.z${ZVERSION} ] ; then

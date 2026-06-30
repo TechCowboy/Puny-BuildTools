@@ -1,12 +1,12 @@
 #!/bin/bash
 # c128_d64.sh - C128 .D64 disk builder
-# Puny BuildTools, (c) 2024 Stefan Vogt
+# Puny BuildTools, (c) 2026 Stefan Vogt
 
 #read config file 
 source config.sh
 
-echo -e "\nc128_d64.sh 2.2 - C128 .D64 disk builder"
-echo -e "Puny BuildTools, (c) 2024 Stefan Vogt\n"
+echo -e "\nc128_d64.sh 2.3 - C128 .D64 disk builder"
+echo -e "Puny BuildTools, (c) 2026 Stefan Vogt\n"
 
 #story check / arrangement
 if ! [ -f ${STORY}.z${ZVERSION} ] ; then
