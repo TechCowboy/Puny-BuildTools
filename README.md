@@ -23,7 +23,7 @@ Welcome brave adventurer! If you're still into classic 8-bit / 16-bit home compu
 
 ## Current version
 
-`3.0` Starlit Path
+`3.0.1` Starlit Path
 
 ## Quick start
 

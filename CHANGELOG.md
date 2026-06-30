@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.1 (Starlit Path minor update)
+
+* fixed Commodore disk builds (C64, Plus/4, MEGA65, C128) that stopped producing output after the Ozmoo 15.7 update, which renamed the colour option -dc:bg:fg to -bgcol/-fgcol
+* fixed the Ozmoo exomizer lookup, also broken by the 15.7 update: exomizer is resolved via PATH again instead of a hardcoded path
+
 ## 3.0 (Starlit Path)
 * Debian Trixie compatibility, various improvements and structural updates
 * updated Inform 6 compiler to latest trunk
