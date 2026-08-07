@@ -35,7 +35,7 @@ do_compile()
   fi
 }
 
-printf "puny CLI 3.0.1_%s" "$gitversion"
+printf "puny CLI 3.0.2_%s" "$gitversion"
 printf " | Starlit Path\n\n"
 
 while getopts ':iectb:haosv' opt; do
@@ -164,11 +164,11 @@ while getopts ':iectb:haosv' opt; do
       echo "Copyright (c) 2026, Stefan Vogt"
       echo "https://github.com/ByteProject/Puny-BuildTools"
       echo -e "\n| component versions: |"
-      echo "[CLI 3.0.1] [pi6 3.0] [bundle.sh 2.4] [Puny-Wan Kenobi 2.0]"
+      echo "[CLI 3.0.2] [pi6 3.0] [bundle.sh 2.4] [Puny-Wan Kenobi 2.0]"
       echo "[makescr.sh 1.0] [ifftool.sh 1.3] [cpcscr.sh 1.0] [degaspi1.sh 1.1]"
       echo "[nextscr.sh 1.0]"
       echo -e "\n| module versions: |"
-      echo "[c64 2.2] [amiga 4.0] [speccy 2.5] [cpc_pcw 2.5] [atari_st 4.0] [a8bit 3.0]"
+      echo "[c64 2.2] [amiga 4.0] [speccy 2.6] [cpc_pcw 2.6] [atari_st 4.0] [a8bit 3.0]"
       echo "[dos 2.2] [msx 2.5] [bbc_acorn 2.2] [c128 2.3] [plus4 2.2] [apple2 3.0]"
       echo "[sam_coupe 2.5] [trs80_m3 3.0] [trs80_m4 3.0] [mega65 2.2] [macintosh 2.0]"
       echo "[agon 1.1] [next 1.0] [trs_coco 2.0] [dragon64 2.0] [x16 1.0]"
