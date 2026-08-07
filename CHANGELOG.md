@@ -3,7 +3,7 @@
 ## 3.0.2 (Starlit Path minor update)
 
 * fixed silently truncated story files on the ZX Spectrum +3 and Amstrad CPC/PCW targets: iDSK reads an imported file through a fixed 128K buffer and drops everything beyond it without a word, so any story larger than 131072 bytes was cut short on a disc that still looked perfectly valid, booted, and then fell apart in play
-* added cpmdsk.py, a dependency-free Python CP/M file inserter that writes as many directory extents as a file needs; the +3 and CPC/PCW builders now place the story with it instead of iDSK
+* added cpmdsk.py, a dependency-free Python CP/M file inserter that writes as many directory extents as a file needs and generates AMSDOS headers where the CPC needs them; it replaces iDSK completely, so nothing in the BuildTools calls iDSK anymore
 * the +3 and CPC/PCW builders now stop with a clear message when a story does not fit on the disc, instead of quietly building a broken one
 
 ## 3.0.1 (Starlit Path minor update)

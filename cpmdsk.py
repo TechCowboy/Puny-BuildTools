@@ -194,6 +194,32 @@ def cpm_name(name):
     return stem.ljust(8).encode("ascii"), ext.ljust(3).encode("ascii")
 
 
+def has_amsdos(data):
+    """True if the file already carries an AMSDOS header."""
+    if len(data) < 69:
+        return False
+    total = sum(data[:67])
+    return total != 0 and total == int.from_bytes(data[0x43:0x45], "little")
+
+
+def amsdos_header(stem, ext, length):
+    """The 128 byte AMSDOS header AMSDOS itself writes for a binary file.
+
+    AMSDOS leaves the load and entry addresses alone (the CPC screen and
+    palette files are loaded by the BASIC loader, which says where they
+    go) and never fills in Length, so only the name, the type, the two
+    length fields and the checksum carry anything.
+    """
+    h = bytearray(128)
+    h[1:9] = stem
+    h[9:12] = ext
+    h[0x12] = 2                                             # binary file
+    h[0x18:0x1A] = (length & 0xFFFF).to_bytes(2, "little")  # logical length
+    h[0x40:0x42] = (length & 0xFFFF).to_bytes(2, "little")  # real length
+    h[0x43:0x45] = (sum(h[:67]) & 0xFFFF).to_bytes(2, "little")
+    return bytes(h)
+
+
 def used_blocks(entries):
     """Every allocation block claimed by a live directory entry."""
     used = set(range(DIRBLOCKS))
@@ -220,10 +246,13 @@ def remove_file(entries, stem, ext, user):
     return found
 
 
-def add_file(dsk, path, name=None, user=0, quiet=False):
+def add_file(dsk, path, name=None, user=0, quiet=False, amsdos=False):
     stem, ext = cpm_name(name or path)
     with open(path, "rb") as f:
         data = f.read()
+
+    if amsdos and not has_amsdos(data):
+        data = amsdos_header(stem, ext, len(data)) + data
 
     entries = dsk.read_dir()
     if remove_file(entries, stem, ext, user) and not quiet:
@@ -313,6 +342,9 @@ def main():
                     help="name to store the file under, if it should differ")
     ap.add_argument("-u", "--user", type=int, default=0, metavar="N",
                     help="CP/M user number (default 0)")
+    ap.add_argument("-a", "--amsdos", action="store_true",
+                    help="give the file an AMSDOS header unless it has one "
+                         "(CPC binaries; story files never want this)")
     ap.add_argument("-l", "--list", action="store_true",
                     help="list the catalog instead of adding anything")
     ap.add_argument("-q", "--quiet", action="store_true",
@@ -345,7 +377,8 @@ def main():
 
     for path in args.insert:
         try:
-            add_file(dsk, path, args.name, args.user, args.quiet)
+            add_file(dsk, path, args.name, args.user, args.quiet,
+                     args.amsdos)
         except DiskFull as e:
             sys.exit("error: disc full: %s" % e)
         except (OSError, ValueError) as e:

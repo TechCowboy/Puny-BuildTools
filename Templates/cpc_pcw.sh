@@ -43,20 +43,12 @@ if ! [ -f Resources/SCREEN.SCR ] ; then
     rm STORY.DAT
 else
     cp ~/FictionTools/Templates/Interpreters/DISC.BAS .
-    idsk ${STORY}.dsk -i DISC.BAS
     cp ~/FictionTools/Templates/Interpreters/GAME.BAS .
-    idsk ${STORY}.dsk -i GAME.BAS
     cp ./Resources/SCREEN.SCR .
-    idsk ${STORY}.dsk -i SCREEN.SCR #-t 1 -c c000
     cp ./Resources/SCREEN.PAL .
-    idsk ${STORY}.dsk -i SCREEN.PAL #-t 1 -c a000
     cp ./Resources/SCREEN.BAS .
-    idsk ${STORY}.dsk -i SCREEN.BAS #-t 1 -c a000
-    # iDSK formats extra tracks when it runs out of room instead of saying
-    # so. A 3" disc holds 40 tracks, so a grown image means the loading
-    # screen did not really fit and the disc would be unreliable.
-    if [ $(stat -c%s ${STORY}.dsk) -ne $(stat -c%s \
-            ~/FictionTools/Templates/Interpreters/cpc_vezza.dsk) ] ; then
+    if ! cpmdsk.py ${STORY}.dsk --amsdos -i DISC.BAS -i GAME.BAS \
+            -i SCREEN.SCR -i SCREEN.PAL -i SCREEN.BAS ; then
         echo -e "\nThe story and the loading screen do not both fit on a"
         echo -e "CPC/PCW disc. Remove SCREEN.SCR from /Resources to build"
         echo -e "without a loading screen. Operation aborted.\n"
