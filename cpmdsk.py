@@ -297,10 +297,16 @@ def list_catalog(dsk):
 
 
 def main():
+    # printed before the parser runs, so it shows on -h and on the usage
+    # errors argparse handles and exits on by itself
+    print("cpmdsk.py v%s - CP/M file inserter for CPC / Spectrum +3"
+          % VERSION)
+    print("Copyright (c) 2026 Stefan Vogt\n")
+
     ap = argparse.ArgumentParser(
         description="Add files to an Amstrad CPC or ZX Spectrum +3 CP/M "
                     ".DSK image.")
-    ap.add_argument("image", help="the .DSK image to write into")
+    ap.add_argument("image", nargs="?", help="the .DSK image to write into")
     ap.add_argument("-i", "--insert", metavar="FILE", action="append",
                     default=[], help="file to add (may be repeated)")
     ap.add_argument("-n", "--name", metavar="NAME",
@@ -311,11 +317,15 @@ def main():
                     help="list the catalog instead of adding anything")
     ap.add_argument("-q", "--quiet", action="store_true",
                     help="do not report each file, only problems")
+    ap.add_argument("-V", "--version", action="store_true",
+                    help="show the version and exit")
     args = ap.parse_args()
 
-    print("cpmdsk.py v%s - CP/M file inserter for CPC / Spectrum +3"
-          % VERSION)
-    print("Copyright (c) 2026 Stefan Vogt\n")
+    if args.version:
+        return
+    if not args.image:          # launched bare, so show the help menu
+        ap.print_help()
+        return
 
     if args.name and len(args.insert) != 1:
         sys.exit("error: -n names a single file, so use it with one -i")
